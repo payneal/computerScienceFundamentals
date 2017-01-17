@@ -12,7 +12,18 @@ Your background is important, so utilize it to your advantage by sharing interes
 __## Computer Science fundementals__
 
 ## 3.) Algorithum Complexity 
-* big-o notion (must know or you will fail) 
+* big-o notaion (must know or you will fail)
+big-o-notation =  A theoretical measure of the execution of an algorithm, usually the time or memory needed, given the problem size n, which is usually the number of items. Informally, saying some equation f(n) = O(g(n)) means it is less than some constant multiple of g(n).
+
+F(n)      Name
+1         Constant
+log n     Logarithmic
+n         Linear
+n log n   Log Linear
+n^2       Quadratic
+n^3       Cubic
+2^n       Exponential
+
 * https://www.topcoder.com/blog/big-o-notation-primer/  
 
 * https://www.topcoder.com/community/data-science/data-science-tutorials/computational-complexity-section-1/
