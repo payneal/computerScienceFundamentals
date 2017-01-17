@@ -15,14 +15,8 @@ __## Computer Science fundementals__
 * big-o notaion (must know or you will fail)
 big-o-notation =  A theoretical measure of the execution of an algorithm, usually the time or memory needed, given the problem size n, which is usually the number of items. Informally, saying some equation f(n) = O(g(n)) means it is less than some constant multiple of g(n).
 
-F(n)      Name
-1         Constant
-log n     Logarithmic
-n         Linear
-n log n   Log Linear
-n^2       Quadratic
-n^3       Cubic
-2^n       Exponential
+![Table](/../googleStudyGuid-python/bigo.png?raw=true "Algorithum table")
+![Graph](/../googleStudyGuid-python/bigograph.png??raw=true "Graph")
 
 * https://www.topcoder.com/blog/big-o-notation-primer/  
 
