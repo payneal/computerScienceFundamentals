@@ -367,16 +367,150 @@ insertion sort:
 The insertion sort uses the principle of a marker moving along a list with a sorted side to the left side of the marker and the unsorted side to the right of the marker.
 
 http://courses.cs.vt.edu/csonline/Algorithms/Lessons/InsertionCardSort/insertioncardsort.html
+https://www.youtube.com/watch?v=Nkw6Jg_Gi4w
 
 ```python 
+def insertionSort(alist):
+   for index in range(1,len(alist)):
 
+     currentvalue = alist[index]
+     position = index
 
+     while position>0 and alist[position-1]>currentvalue:
+         alist[position]=alist[position-1]
+         position = position-1
+
+     alist[position]=currentvalue
+
+alist = [54,26,93,17,77,31,44,55,20]
+insertionSort(alist)
+print(alist)
 ```
+
 selection sort:
+The selection sort improves on the bubble sort by making only one exchange for every pass through the list. In order to do this, a selection sort looks for the largest value as it makes a pass and, after completing the pass, places it in the proper location. As with a bubble sort, after the first pass, the largest item is in the correct place. After the second pass, the next largest is in place. This process continues and requires n−1n−1 passes to sort n items, since the final item must be in place after the (n−1)(n−1) st pass.
+
+https://www.youtube.com/watch?v=6nDMgr0-Yyo
+
+```python 
+def selectionSort(alist):
+   for fillslot in range(len(alist)-1,0,-1):
+       positionOfMax=0
+       for location in range(1,fillslot+1):
+           if alist[location]>alist[positionOfMax]:
+               positionOfMax = location
+
+       temp = alist[fillslot]
+       alist[fillslot] = alist[positionOfMax]
+       alist[positionOfMax] = temp
+
+alist = [54,26,93,17,77,31,44,55,20]
+selectionSort(alist)
+print(alist)
+```
 
 tree sort:
+Tree sort is a sorting algorithm that is based on Binary Search Tree data structure. It first creates a binary search tree from the elements of the input list or array and then performs an in-order traversal on the created binary search tree to get the elements in sorted order.
+
+https://www.youtube.com/watch?v=pYT9F8_LFTM
+
+Algorithm:
+
+Step 1: Take the elements input in an array.
+Step 2: Create a Binary search tree by inserting data items from the array into the
+        binary searh tree.
+Step 3: Perform in-order traversal on the tree to get the elements in sorted order.
+
+```python 
+   class Node:
+      def __init__(self,info): #constructor of class
+          self.info = info  #information for node
+          self.left = None  #left leef
+          self.right = None #right leef
+          self.level = None #level none defined
+      def __str__(self):
+          return str(self.info) #return as string
+
+class searchtree:
+      def __init__(self): #constructor of class
+          self.root = None
+
+      def create(self,val):  #create binary search tree nodes
+          if self.root == None:
+             self.root = Node(val)
+          else:
+             current = self.root
+             while 1:
+                 if val < current.info:
+                   if current.left:
+                      current = current.left
+                   else:
+                      current.left = Node(val)
+                      break;      
+
+                 elif val > current.info:
+                    if current.right:
+                       current = current.right
+                    else:
+                       current.right = Node(val)
+                       break;      
+                 else:
+                    break 
+
+      def bft(self): #Breadth-First Traversal
+          self.root.level = 0 
+          queue = [self.root]
+          out = []
+          current_level = self.root.level
+          while len(queue) > 0:
+             current_node = queue.pop(0)
+             if current_node.level > current_level:
+                current_level += 1
+                out.append("\n")
+             out.append(str(current_node.info) + " ")
+             if current_node.left:
+                current_node.left.level = current_level + 1
+                queue.append(current_node.left)  
+             if current_node.right:
+                current_node.right.level = current_level + 1
+                queue.append(current_node.right)
+             print "".join(out)   
+
+      def inorder(self,node):
+           if node is not None:              
+              self.inorder(node.left)
+              print node.info
+              self.inorder(node.right)
+
+      def preorder(self,node):
+           if node is not None:
+              print node.info
+              self.preorder(node.left)
+              self.preorder(node.right)
+
+      def postorder(self,node):
+           if node is not None:
+              self.postorder(node.left)
+              self.postorder(node.right)
+              print node.info
+
+tree = searchtree()     
+arr = [8,3,1,6,4,7,10,14,13]
+for i in arr:
+    tree.create(i)
+print 'Breadth-First Traversal'
+tree.bft()
+print 'Inorder Traversal'
+tree.inorder(tree.root) 
+print 'Preorder Traversal'
+tree.preorder(tree.root) 
+print 'Postorder Traversal'
+tree.postorder(tree.root) 
+```
 
 shell sort:
+
+
 
 bucket sort:
 
