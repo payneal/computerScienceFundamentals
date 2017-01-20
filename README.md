@@ -317,6 +317,8 @@ the partition phase
 the sort phase
 Most of the work is done in the partition phase - it works out where to divide the work. The sort phase simply sorts the two smaller problems that are generated in the partition phase.
 
+![Quick Sort](/../master/images/quicksort.png?raw=true "Quick sort ex")
+
 This makes Quicksort a good example of the divide and conquer strategy for solving problems. This is similar in principle to the binary search. In the quicksort, we divide the array of items to be sorted into two partitions and then call the quicksort procedure recursively to sort the two partitions, ie we divide the problem into two smaller ones and conquer by solving the smaller ones.
 
 http://www.csanimated.com/animation.php?t=Quicksort
@@ -456,13 +458,38 @@ print(alist)
 ```
 
 timsort:
+	
+![Bubble Sort](/../master/images/bubblesort.png?raw=true "Bubble sort ex")
+
+![Bubble Sort](/../master/images/bubblesort.png?raw=true "Bubble sort ex")
+
+![Bubble Sort](/../master/images/bubblesort.png?raw=true "Bubble sort ex")
+
 
 heapsort:
 
 buble sort:
+	Bubble sort is one of the most basic sorting algorithm that is the simplest to understand. It’s basic idea is to bubble up the largest(or smallest), then the 2nd largest and the the 3rd and so on to the end of the list. Each bubble up takes a full sweep through the list
+
+https://www.youtube.com/watch?v=P00xJgWzz2c
+
+![Bubble Sort](/../master/images/bubblesort.png?raw=true "Bubble sort ex")
+
+```python 
+def bubble_sort(items):
+        """ Implementation of bubble sort """
+        for i in range(len(items)):
+                for j in range(len(items)-1-i):
+                        if items[j] &gt; items[j+1]:
+                                items[j], items[j+1] = items[j+1], items[j]     # Swap!
+ 
+```
 
 insertion sort:
 The insertion sort uses the principle of a marker moving along a list with a sorted side to the left side of the marker and the unsorted side to the right of the marker.
+
+
+![Insertion sort](/../master/images/insertionsort.png?raw=true "Insertion sort ex")
 
 http://courses.cs.vt.edu/csonline/Algorithms/Lessons/InsertionCardSort/insertioncardsort.html
 https://www.youtube.com/watch?v=Nkw6Jg_Gi4w
@@ -488,6 +515,9 @@ print(alist)
 selection sort:
 The selection sort improves on the bubble sort by making only one exchange for every pass through the list. In order to do this, a selection sort looks for the largest value as it makes a pass and, after completing the pass, places it in the proper location. As with a bubble sort, after the first pass, the largest item is in the correct place. After the second pass, the next largest is in place. This process continues and requires n−1n−1 passes to sort n items, since the final item must be in place after the (n−1)(n−1) st pass.
 
+
+![Selection Sort](/../master/images/selectionsort.png?raw=true "Selection sort ex")
+
 https://www.youtube.com/watch?v=6nDMgr0-Yyo
 
 ```python 
@@ -509,6 +539,11 @@ print(alist)
 
 tree sort:
 Tree sort is a sorting algorithm that is based on Binary Search Tree data structure. It first creates a binary search tree from the elements of the input list or array and then performs an in-order traversal on the created binary search tree to get the elements in sorted order.
+
+![Tree Sort](/../master/images/treesort0.png?raw=true "tree sort ex")
+![Tree Sort...](/../master/images/treesort1.png?raw=true "tree sort continued")
+![Tree Sort...](/../master/images/treesort2.png?raw=true "tree sort continued")
+![Tree Sort...](/../master/images/treesort3.png?raw=true "tree sort continued")
 
 https://www.youtube.com/watch?v=pYT9F8_LFTM
 
@@ -607,8 +642,6 @@ tree.postorder(tree.root)
 ```
 
 shell sort:
-
-
 
 bucket sort:
 
