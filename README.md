@@ -583,7 +583,7 @@ def swap( A, x, y ):
   A[y] = tmp
 ```
 
-buble sort:
+#### buble sort:
 	Bubble sort is one of the most basic sorting algorithm that is the simplest to understand. It’s basic idea is to bubble up the largest(or smallest), then the 2nd largest and the the 3rd and so on to the end of the list. Each bubble up takes a full sweep through the list
 
 https://www.youtube.com/watch?v=P00xJgWzz2c
@@ -600,7 +600,7 @@ def bubble_sort(items):
  
 ```
 
-insertion sort:
+#### insertion sort:
 The insertion sort uses the principle of a marker moving along a list with a sorted side to the left side of the marker and the unsorted side to the right of the marker.
 
 ![Insertion sort](/../master/images/insertionsort.png?raw=true "Insertion sort ex")
@@ -626,7 +626,7 @@ insertionSort(alist)
 print(alist)
 ```
 
-selection sort:
+#### selection sort:
 The selection sort improves on the bubble sort by making only one exchange for every pass through the list. In order to do this, a selection sort looks for the largest value as it makes a pass and, after completing the pass, places it in the proper location. As with a bubble sort, after the first pass, the largest item is in the correct place. After the second pass, the next largest is in place. This process continues and requires n−1n−1 passes to sort n items, since the final item must be in place after the (n−1)(n−1) st pass.
 
 
@@ -651,7 +651,7 @@ selectionSort(alist)
 print(alist)
 ```
 
-tree sort:
+#### tree sort:
 Tree sort is a sorting algorithm that is based on Binary Search Tree data structure. It first creates a binary search tree from the elements of the input list or array and then performs an in-order traversal on the created binary search tree to get the elements in sorted order.
 
 ![Tree Sort](/../master/images/treesort0.png?raw=true "tree sort ex")
@@ -755,7 +755,7 @@ print 'Postorder Traversal'
 tree.postorder(tree.root) 
 ```
 
-shell sort:
+#### shell sort:
 """
 |-----------------------------------------------------------|
 |                        Shell Sort                         |
@@ -787,7 +787,7 @@ def shell_sort(array):
     return array
 ```
 
-bucket sort:
+#### bucket sort:
 Bucket sort can be exceptionally fast because of the way elements are assigned to buckets, typically using an array where the index is the value. This means that more auxiliary memory is required for the buckets at the cost of running time than more comparison sorts. It runs in O(n+k)O(n+k) time in the average case where nn is the number of elements to be sorted and kk is the number of buckets.
 
 ![Bucket Sort](/../master/images/bucketsort.png?raw=true "bucket sort ex")
@@ -837,7 +837,8 @@ def sort(array, bucketSize=DEFAULT_BUCKET_SIZE):
 
   return array
   ```
-radix sort:
+
+#### radix sort:
 The algorithm is named radix sort as it specifies the radix rr to be used which changes how the sort is performed. The radix, or base, of the number system is the number of digits that represent a single position in the number; a radix of 2 is binary (0-1), 10 is decimal (0-9), 16 is hexadecimal (0-F) and so on. Since the radix determines the number of buckets in addition to the word size ww used in the algorithm, changing it can drastically change how the sort plays out:
 
 https://www.youtube.com/watch?v=YXFI4osELGU
@@ -909,7 +910,7 @@ def countingSortByDigit(array, radix, exponent, minValue):
   return output
 ```
 
-counting sort:
+#### counting sort:
 	is a sorting technique based on keys between a specific range
 	it works by counting the number of objects having distinct key values
 	Then doing some arithmetic to calculate the position of each object in the output sequence
@@ -957,14 +958,145 @@ print counting_sort( [1, 4, 7, 2, 1, 3, 2, 1, 4, 2, 3, 2, 1], 7 )
 #            prints: [1, 1, 1, 1, 2, 2, 2, 2, 3, 3, 4, 4, 7],[0, 4, 4, 2, 2, 0, 0, 1]
 ```
 
-cubesort sort:
+#### cubesort sort:
+Cubesort is a parallel sorting algorithm that builds a self-balancing multi-dimensional array from the keys to be sorted. As the axes are of similar length the structure resembles a cube. After each key is inserted the cube can be rapidly converted to an arra
+Data structure : array
+worst-case preformance: O(n log n)
+worst-case space complexity: 0(n)
+operation: Cubesort's algorithm uses a specialized binary search on each axis to find the location to insert an element. When an axis grows too large it is split. Locality of reference is optimal as only 4 binary searches are performed on small arrays for each insertion. By using many small dynamic arrays the high cost for insertion on single large arrays is avoided.
 
+(cant find example)
 
 ## 7. hashtables (must know or will fail)
 * Be able to implement one using only arrays in your favorite language, in about the space of one interview.
 python example:
 
-hash Table:
+#### hash Table:
+are used wehn speedy insertion, deletion, and lookup is the priority. In fact, for an ideally tuned hash table, insertion, deletion, and lookup can be accomplished in constant time
+
+A has table is an array associated with a function(the hash function)
+
+components of a hashmap
+	Array
+	Hash function
+	collision handling
+
+![Hash Table](/../master/images/hashtable1.png?raw=true "hash table ex")
+
+hash function = maps keys to array indices. For example, in this slide we see that the hash function has mapped the key 'banana' to index 1.
+But what's going on under the hood?
+The hash function takes a key as input and computes an array index from the intrinsic properties of that key.
+You’d initially use the hash function to determine where in the hash table to store a given key. Later, you’d use the same hash function to determine where in the hash table to search for a given key. For this reason, it’s crucial that a hash function behaves consistently and outputs the same index for identical inputs.
+
+![Hash Table](/../master/images/hashtable2.png?raw=true "hash table ex")
+
+Keep in mind that hash tables can be used to store data of all types, but for now, let’s consider a very simple hash function for strings.
+
+This hash function uses the first letter of a string to determine a hash table index for that string, so words that start with the letter 'a' are assigned to index 0, 'b' to index 1, and so on.
+
+Note that this hash function returns hash % SIZE, where SIZE is the size of the hash table. Modding by the size of the hash table is a good way to avoid indexing into a hash table slot that does not exist.
+
+![Hash Table](/../master/images/hashtable3.png?raw=true "hash table ex")
+
+Time to throw a wrench into things. What if we want to store the word berry into the table as well?
+
+Berry hashes to index 1, just as banana did. This is an example of a collision, the result of two keys hashing to the same index.
+
+Even if your hash table is larger than your dataset and you’ve chosen a good hash function, you need a plan for dealing with collisions if and when they arise. Two common methods of dealing with collisions are linear probing and separate chaining.
+
+![Hash Table](/../master/images/hashtable4.png?raw=true "hash table ex")
+
+With linear probing, if a key hashes to the same index as a previously stored key, it is assigned the next available slot in the table.
+
+So banana is stored at index 1, and berry is stored at index 3.
+
+As you can surmise even from this simple example, once a collision occurs, you’ve significantly increased chances that another collision will occur in the same area. This is called clustering, and it’s a serious drawback to linear probing.
+
+Worst case insertion, deletion, and lookup times have devolved to O(n), as the next available slot could potentially have been the last slot in the table.
+
+![Hash Table](/../master/images/hashtable5.png?raw=true "hash table ex")
+
+In the separate chaining model, the hash table is actually an array of pointers to linked lists.
+
+When a collision occurs, the key can be inserted in constant time at the head of the appropriate linked list.
+
+What happens now when we search for banana in the hash table? We must traverse the entire linked list at index 1. The worst case lookup time for a hash table that uses separate chaining (assuming a uniform hash function) is therefore O(n/m), where m is the size of the hash table.
+
+Since m is a constant, O(n/m) is theoretically equivalent to O(n). In the real world, however, O(n/m) is a big improvement over O(n)!
+
+A good hash function will maximize this real world improvement.
+
+![Hash Table](/../master/images/hashtable6.png?raw=true "hash table ex")
+
+https://www.youtube.com/watch?v=shs0KM3wKv8
+	
+```python
+class HashMap:
+	def __init__(self):
+		self.size = 6
+		self.map = [None] * self.size
+		
+	def _get_hash(self, key):
+		hash = 0
+		for char in str(key):
+			hash += ord(char)
+		return hash % self.size
+		
+	def add(self, key, value):
+		key_hash = self._get_hash(key)
+		key_value = [key, value]
+		
+		if self.map[key_hash] is None:
+			self.map[key_hash] = list([key_value])
+			return True
+		else:
+			for pair in self.map[key_hash]:
+				if pair[0] == key:
+					pair[1] = value
+					return True
+			self.map[key_hash].append(key_value)
+			return True
+			
+	def get(self, key):
+		key_hash = self._get_hash(key)
+		if self.map[key_hash] is not None:
+			for pair in self.map[key_hash]:
+				if pair[0] == key:
+					return pair[1]
+		return None
+			
+	def delete(self, key):
+		key_hash = self._get_hash(key)
+		
+		if self.map[key_hash] is None:
+			return False
+		for i in range (0, len(self.map[key_hash])):
+			if self.map[key_hash][i][0] == key:
+				self.map[key_hash].pop(i)
+				return True
+		return False
+			
+	def print(self):
+		print('---PHONEBOOK----')
+		for item in self.map:
+			if item is not None:
+				print(str(item))
+			
+h = HashMap()
+h.add('Bob', '567-8888')
+h.add('Ming', '293-6753')
+h.add('Ming', '333-8233')
+h.add('Ankit', '293-8625')
+h.add('Aditya', '852-6551')
+h.add('Alicia', '632-4123')
+h.add('Mike', '567-2188')
+h.add('Aditya', '777-8888')
+h.print()		
+h.delete('Bob')
+h.print()
+print('Ming: ' + h.get('Ming'))
+
+```
 
 ## 8. Trees
 *  basic tree construction, traversal and manipulation algorithms.
