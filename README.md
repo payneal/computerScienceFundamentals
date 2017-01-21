@@ -458,15 +458,33 @@ print(alist)
 ```
 
 timsort:
-	
-![Bubble Sort](/../master/images/bubblesort.png?raw=true "Bubble sort ex")
+Timsort is a hybrid algorithm combining merge and insertion sorts. It was invented in 2002 by Tim Peters for use in the Python programming language.
 
-![Bubble Sort](/../master/images/bubblesort.png?raw=true "Bubble sort ex")
+Timsort begins by looking for small runs (called miniruns) of data that is already sorted (either small to large or vice versa). If no runs of a long-enough length (minirun is short for “minimum run”) are found then an insertion step takes place to create them. These miniruns are sorted using an insertion sort as explained above, and then combined with each other using Mergesort, again as explained above. The trick of Timsort is how it selects and creates miniruns,
 
-![Bubble Sort](/../master/images/bubblesort.png?raw=true "Bubble sort ex")
+![Tim Sort](/../master/images/timsort1.png?raw=true "Tim sort info")
 
+![Tim Sort ...](/../master/images/timsort2.png?raw=true "Tim sort continued")
+
+"""
+|-----------------------------------------------------------|
+|                         Tim Sort                          |
+|-----------------------------------------------------------|
+|Created By Tim Roberts      ||  Python's Builtin Sort      |
+|Worst case performance      ||  O(n log n)                 |
+|Best case performance       ||  O(n)                       |
+|Average case performance    ||  O(n log n)                 |
+|Worst case space complexity ||  O(n)                       |
+|-----------------------------------------------------------|
+"""
+
+```python 
+def tim_sort(array): 
+	return sorted(array"
+```
 
 heapsort:
+	
 
 buble sort:
 	Bubble sort is one of the most basic sorting algorithm that is the simplest to understand. It’s basic idea is to bubble up the largest(or smallest), then the 2nd largest and the the 3rd and so on to the end of the list. Each bubble up takes a full sweep through the list
@@ -487,7 +505,6 @@ def bubble_sort(items):
 
 insertion sort:
 The insertion sort uses the principle of a marker moving along a list with a sorted side to the left side of the marker and the unsorted side to the right of the marker.
-
 
 ![Insertion sort](/../master/images/insertionsort.png?raw=true "Insertion sort ex")
 
@@ -642,10 +659,159 @@ tree.postorder(tree.root)
 ```
 
 shell sort:
+"""
+|-----------------------------------------------------------|
+|                        Shell Sort                         |
+|-----------------------------------------------------------|
+|Type                        ||  In-place comparison sort   |
+|Worst case performance      ||  O(n2)                      |
+|Best case performance       ||  O(n log2 n)                |
+|Average case performance    ||  depends on gap sequence    |
+|Worst case space complexity ||  O(n) total, O(1) auxiliary |
+|-----------------------------------------------------------|
+"""
+
+
+![Shell Sort](/../master/images/shellsort.png?raw=true "shell sort ex")
+https://www.youtube.com/watch?v=M9YCh-ZeC7Y
+
+```python
+def shell_sort(array):
+    mid = len(array) / 2
+    while mid:
+        for i in range(len(array)):
+            j = i
+            temp = array[i]
+            while j >= mid and array[j-mid] > temp:
+                array[j] = array[j - mid]
+                j -= mid
+            array[j] = temp
+        mid = mid/2 if mid/2 else (0 if mid == 1 else 1)
+    return array
+```
 
 bucket sort:
+Bucket sort can be exceptionally fast because of the way elements are assigned to buckets, typically using an array where the index is the value. This means that more auxiliary memory is required for the buckets at the cost of running time than more comparison sorts. It runs in O(n+k)O(n+k) time in the average case where nn is the number of elements to be sorted and kk is the number of buckets.
 
+![Bucket Sort](/../master/images/bucketsort.png?raw=true "bucket sort ex")
+![Bucket Sort Complexity](/../master/images/buckersortcomplexity.png?raw=true "bucket sort complexity")
+
+when its fast:
+Bucket sort’s best case occurs when the data being sorted can be distributed between the buckets perfectly. If the values are sparsely allocated over the possible value range, a larger bucket size is better since the buckets will likely be more evenly distributed. An example of this is [2303, 33, 1044], if buckets can only contain 5 different values then for this example 461 buckets would need to be initialised. A bucket size of 200-1000 would be much more reasonable.
+The inverse of this is also true; a densely allocated array like [103, 99, 119, 112, 111] performs best when buckets are as small as possible.
+Bucket sort is an ideal algorithm choice when:
+The additional O(n + k)O(n+k) memory usage is not an issue
+Elements are expected to be fairly evenly distributed
+
+when its slow:
+Bucket sort performs at its worst, O(n^2), when all elements at allocated to the same bucket. Since individual buckets are sorted using another algorithm, if only a single bucket needs to be sorted, bucket sort will take on the complexity of the inner sorting algorithm.
+This depends on the individual implementation though and can be mitigated. For example a bucket sort algorithm could be made to work with large bucket sizes by using insertion sort on small buckets (due to its low overhead), and merge sort or quicksort on larger buckets.
+
+```python 
+def sort(array, bucketSize=DEFAULT_BUCKET_SIZE):
+  if len(array) == 0:
+    return array
+
+  # Determine minimum and maximum values
+  minValue = array[0]
+  maxValue = array[0]
+  for i in range(1, len(array)):
+    if array[i] < minValue:
+      minValue = array[i]
+    elif array[i] > maxValue:
+      maxValue = array[i]
+
+  # Initialize buckets
+  bucketCount = math.floor((maxValue - minValue) / bucketSize) + 1
+  buckets = []
+  for i in range(0, bucketCount):
+    buckets.append([])
+
+  # Distribute input array values into buckets
+  for i in range(0, len(array)):
+    buckets[math.floor((array[i] - minValue) / bucketSize)].append(array[i])
+
+  # Sort buckets and place back into input array
+  array = []
+  for i in range(0, len(buckets)):
+    insertion_sort.sort(buckets[i])
+    for j in range(0, len(buckets[i])):
+      array.append(buckets[i][j])
+
+  return array
+  ```
 radix sort:
+The algorithm is named radix sort as it specifies the radix rr to be used which changes how the sort is performed. The radix, or base, of the number system is the number of digits that represent a single position in the number; a radix of 2 is binary (0-1), 10 is decimal (0-9), 16 is hexadecimal (0-F) and so on. Since the radix determines the number of buckets in addition to the word size ww used in the algorithm, changing it can drastically change how the sort plays out:
+
+https://www.youtube.com/watch?v=YXFI4osELGU
+
+
+![Radix Sort](/../master/images/radixsort1.png?raw=true "radix sort ex")
+![Radix Sort](/../master/images/radixsort2.png?raw=true "radix sort ex")
+![Radix Sort](/../master/images/radixsort3.png?raw=true "radix sort ex")
+![Radix Sort](/../master/images/radixsort4.png?raw=true "radix sort ex")
+![Radix Sort](/../master/images/radixsort5.png?raw=true "radix sort ex")
+![Radix Sort](/../master/images/radixsort6.png?raw=true "radix sort ex")
+![Radix Sort](/../master/images/radixsort7.png?raw=true "radix sort ex")
+![Radix Sort](/../master/images/radixsort8.png?raw=true "radix sort ex")
+![Radix Sort](/../master/images/radixsort9.png?raw=true "radix sort ex")
+![Radix Sort](/../master/images/radixsort10.png?raw=true "radix sort ex")
+![Radix Sort](/../master/images/radixsort11.png?raw=true "radix sort ex")
+![Radix Sort](/../master/images/radixsort12.png?raw=true "radix sort ex")
+![Radix Sort](/../master/images/radixsort13.png?raw=true "radix sort ex")
+
+fast: 
+Since comparison sorts cannot perform better than O(n\log n)O(nlogn), LSD radix sort is considered one of the best alternatives provided the word size ww is expected to be less than \log nlogn.
+It does however have limitations on the type of keys that can be sorted in that they need to have some way of being split up (ie. the radix), so it’s typically only used for string (where r=255r=255 for ASCII characters) and integer keys.
+
+slow:
+Radix sort is slowest when the word size is large, such as when there is a large key range but small radix. The reason that a large radix is not always used is because then it essentially becomes counting sort, with the large memory footprint associated with it.
+
+```python
+def sort(array, radix=10):
+  if len(array) == 0:
+    return array
+
+  # Determine minimum and maximum values
+  minValue = array[0];
+  maxValue = array[0];
+  for i in range(1, len(array)):
+    if array[i] < minValue:
+      minValue = array[i]
+    elif array[i] > maxValue:
+      maxValue = array[i]
+
+  # Perform counting sort on each exponent/digit, starting at the least
+  # significant digit
+  exponent = 1
+  while (maxValue - minValue) / exponent >= 1:
+    array = countingSortByDigit(array, radix, exponent, minValue)
+    exponent *= radix
+
+  return array
+
+def countingSortByDigit(array, radix, exponent, minValue):
+  bucketIndex = -1
+  buckets = [0] * radix
+  output = [None] * len(array)
+
+  # Count frequencies
+  for i in range(0, len(array)):
+    bucketIndex = math.floor(((array[i] - minValue) / exponent) % radix)
+    buckets[bucketIndex] += 1
+
+  # Compute cumulates
+  for i in range(1, radix):
+    buckets[i] += buckets[i - 1]
+
+  # Move records
+  for i in range(len(array) - 1, -1, -1):
+    bucketIndex = math.floor(((array[i] - minValue) / exponent) % radix)
+    buckets[bucketIndex] -= 1
+    output[buckets[bucketIndex]] = array[i]
+
+  return output
+```
 
 counting sort:
 
