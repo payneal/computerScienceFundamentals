@@ -694,7 +694,7 @@ bucket sort:
 Bucket sort can be exceptionally fast because of the way elements are assigned to buckets, typically using an array where the index is the value. This means that more auxiliary memory is required for the buckets at the cost of running time than more comparison sorts. It runs in O(n+k)O(n+k) time in the average case where nn is the number of elements to be sorted and kk is the number of buckets.
 
 ![Bucket Sort](/../master/images/bucketsort.png?raw=true "bucket sort ex")
-![Bucket Sort Complexity](/../master/images/buckersortcomplexity.png?raw=true "bucket sort complexity")
+![Bucket Sort Complexity](/../master/images/bucketsortcomplexity.png?raw=true "bucket sort complexity")
 
 when its fast:
 Bucket sort’s best case occurs when the data being sorted can be distributed between the buckets perfectly. If the values are sparsely allocated over the possible value range, a larger bucket size is better since the buckets will likely be more evenly distributed. An example of this is [2303, 33, 1044], if buckets can only contain 5 different values then for this example 461 buckets would need to be initialised. A bucket size of 200-1000 would be much more reasonable.
@@ -744,7 +744,6 @@ radix sort:
 The algorithm is named radix sort as it specifies the radix rr to be used which changes how the sort is performed. The radix, or base, of the number system is the number of digits that represent a single position in the number; a radix of 2 is binary (0-1), 10 is decimal (0-9), 16 is hexadecimal (0-F) and so on. Since the radix determines the number of buckets in addition to the word size ww used in the algorithm, changing it can drastically change how the sort plays out:
 
 https://www.youtube.com/watch?v=YXFI4osELGU
-
 
 ![Radix Sort](/../master/images/radixsort1.png?raw=true "radix sort ex")
 ![Radix Sort](/../master/images/radixsort2.png?raw=true "radix sort ex")
@@ -814,8 +813,55 @@ def countingSortByDigit(array, radix, exponent, minValue):
 ```
 
 counting sort:
+	is a sorting technique based on keys between a specific range
+	it works by counting the number of objects having distinct key values
+	then doing some arithmetic to calculate the position of each object in the output sequence
+	
+	Time Complexity: O(n+k) where n is the number of elements in input array and k is the range of input.
+Auxiliary Space: O(n+k)
+
+Points to be noted:
+1. Counting sort is efficient if the range of input data is not significantly greater than the number of objects to be sorted. Consider the situation where the input sequence is between range 1 to 10K and the data is 10, 5, 10K, 5K.
+2. It is not a comparison based sorting. It running time complexity is O(n) with space proportional to the range of data.
+3. It is often used as a sub-routine to another sorting algorithm like radix sort.
+4. Counting sort uses a partial hashing to count the occurrence of the data object in O(1).
+5. Counting sort can be extended to work for negative inputs also.
+	
+	https://www.youtube.com/watch?v=7zuGmKfUt7s
+	
+	![Counting Sort](/../master/images/countingsort1.png?raw=true "counting sort ex")
+	![Counting Sort](/../master/images/countingsort2.png?raw=true "counting sort ex")
+	![Counting Sort](/../master/images/countingsort3.png?raw=true "counting sort ex")
+	![Counting Sort](/../master/images/countingsort4.png?raw=true "counting sort ex")
+	![Counting Sort](/../master/images/countingsort5.png?raw=true "counting sort ex")
+	![Counting Sort](/../master/images/countingsort6.png?raw=true "counting sort ex")
+	![Counting Sort](/../master/images/countingsort7.png?raw=true "counting sort ex")
+	![Counting Sort](/../master/images/countingsort8.png?raw=true "counting sort ex")
+	![Counting Sort](/../master/images/countingsort9.png?raw=true "counting sort ex")
+	![Counting Sort](/../master/images/countingsort10.png?raw=true "counting sort ex")
+	![Counting Sort](/../master/images/countingsort11.png?raw=true "counting sort ex")
+	![Counting Sort](/../master/images/countingsort12.png?raw=true "counting sort ex")
+
+```python
+def counting_sort(array, maxval):
+    """in-place counting sort"""
+    m = maxval + 1
+    count = [0] * m               # init with zeros
+    for a in array:
+        count[a] += 1             # count occurences
+    i = 0
+    for a in range(m):            # emit
+        for c in range(count[a]): # - emit 'count[a]' copies of 'a'
+            array[i] = a
+            i += 1
+    return (array,count)
+
+print counting_sort( [1, 4, 7, 2, 1, 3, 2, 1, 4, 2, 3, 2, 1], 7 )
+#            prints: [1, 1, 1, 1, 2, 2, 2, 2, 3, 3, 4, 4, 7],[0, 4, 4, 2, 2, 0, 0, 1]
+```
 
 cubesort sort:
+
 
 ## 7. hashtables (must know or will fail)
 * Be able to implement one using only arrays in your favorite language, in about the space of one interview.
