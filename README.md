@@ -827,20 +827,20 @@ It is often used as a sub-routine to another sorting algorithm like radix sort.
 Counting sort uses a partial hashing to count the occurrence of the data object in O(1).
 Counting sort can be extended to work for negative inputs also.
 	
-	https://www.youtube.com/watch?v=7zuGmKfUt7s
+https://www.youtube.com/watch?v=7zuGmKfUt7s
 	
-	![Counting Sort](/../master/images/countingsort1.png?raw=true "counting sort ex")
-	![Counting Sort](/../master/images/countingsort2.png?raw=true "counting sort ex")
-	![Counting Sort](/../master/images/countingsort3.png?raw=true "counting sort ex")
-	![Counting Sort](/../master/images/countingsort4.png?raw=true "counting sort ex")
-	![Counting Sort](/../master/images/countingsort5.png?raw=true "counting sort ex")
-	![Counting Sort](/../master/images/countingsort6.png?raw=true "counting sort ex")
-	![Counting Sort](/../master/images/countingsort7.png?raw=true "counting sort ex")
-	![Counting Sort](/../master/images/countingsort8.png?raw=true "counting sort ex")
-	![Counting Sort](/../master/images/countingsort9.png?raw=true "counting sort ex")
-	![Counting Sort](/../master/images/countingsort10.png?raw=true "counting sort ex")
-	![Counting Sort](/../master/images/countingsort11.png?raw=true "counting sort ex")
-	![Counting Sort](/../master/images/countingsort12.png?raw=true "counting sort ex")
+![Counting Sort](/../master/images/countingsort1.png?raw=true "counting sort ex")	
+![Counting Sort](/../master/images/countingsort2.png?raw=true "counting sort ex")
+![Counting Sort](/../master/images/countingsort3.png?raw=true "counting sort ex")
+![Counting Sort](/../master/images/countingsort4.png?raw=true "counting sort ex")
+![Counting Sort](/../master/images/countingsort5.png?raw=true "counting sort ex")
+![Counting Sort](/../master/images/countingsort6.png?raw=true "counting sort ex")
+![Counting Sort](/../master/images/countingsort7.png?raw=true "counting sort ex")
+![Counting Sort](/../master/images/countingsort8.png?raw=true "counting sort ex")
+![Counting Sort](/../master/images/countingsort9.png?raw=true "counting sort ex")
+![Counting Sort](/../master/images/countingsort10.png?raw=true "counting sort ex")
+![Counting Sort](/../master/images/countingsort11.png?raw=true "counting sort ex")
+![Counting Sort](/../master/images/countingsort12.png?raw=true "counting sort ex")
 
 ```python
 def counting_sort(array, maxval):
