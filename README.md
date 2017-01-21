@@ -457,7 +457,7 @@ print(alist)
 
 ```
 
-timsort:
+#### tim sort:
 Timsort is a hybrid algorithm combining merge and insertion sorts. It was invented in 2002 by Tim Peters for use in the Python programming language.
 
 Timsort begins by looking for small runs (called miniruns) of data that is already sorted (either small to large or vice versa). If no runs of a long-enough length (minirun is short for “minimum run”) are found then an insertion step takes place to create them. These miniruns are sorted using an insertion sort as explained above, and then combined with each other using Mergesort, again as explained above. The trick of Timsort is how it selects and creates miniruns,
@@ -483,8 +483,105 @@ def tim_sort(array):
 	return sorted(array"
 ```
 
-heapsort:
-	
+#### heapsort:
+heaps are based on the notion of complete tree
+2 main steps are
+creation of heap
+processing of heap
+
+creation of heap = put the largest element on the top in each step size of the Heap increase
+put the elements in heap as they occur in swquential order i.e, parent then leftchild and then right child.
+Each time (of inserting a new node/child) compare it with its Parent Node
+Is? Child Node (left or Right ) is less than or equal or greater than or equal to that of the parent node ...
+If it is greater than its successor than interchange them. 
+
+processing of the heap:
+The last element of last level should be replsced by ztop element of the list.
+zin this process the largest element will be at last place
+List weill be sdorted out in increasing order from root to leaf
+After reolacing the top element Creatuion of the Heap takes place 
+In each stepo size of Heap decreased
+
+![Heap Sort](/../master/images/heapsort0.png?raw=true "heap sort ex")
+![Heap Sort](/../master/images/heapsort1.png?raw=true "heap sort continued")
+![Heap Sort](/../master/images/heapsort2.png?raw=true "heap sort continued")
+![Heap Sort](/../master/images/heapsort3.png?raw=true "heap sort continued")
+![Heap Sort](/../master/images/heapsort4.png?raw=true "heap sort continued")
+![Heap Sort](/../master/images/heapsort5.png?raw=true "heap sort continued")
+![Heap Sort](/../master/images/heapsort6.png?raw=true "heap sort continued")
+
+https://www.youtube.com/watch?v=onlhnHpGgC4
+
+```python
+#  Statement:
+#  Given a disordered list of integers (or any other items),
+#  rearrange the integers in natural order.
+#
+#  Sample Input: [8,5,3,1,9,6,0,7,4,2,5]
+#  Sample Output: [0,1,2,3,4,5,5,6,7,8,9]
+#
+#  Time Complexity of Solution:
+#  Best O(nlog(n)); Average O(nlog(n)); Worst O(nlog(n)).
+#
+#  Approach:
+#  Heap sort happens in two phases. In the first phase, the array
+#  is transformed into a heap. A heap is a binary tree where
+#  1) each node is greater than each of its children
+#  2) the tree is perfectly balanced
+#  3) all leaves are in the leftmost position available.
+#  In phase two the heap is continuously reduced to a sorted array:
+#  1) while the heap is not empty
+#  - remove the top of the head into an array
+#  - fix the heap.
+#  Heap sort was invented by John Williams not by B. R. Heap.
+#
+#  MoveDown:
+#  The movedown method checks and verifies that the structure is a heap.
+#
+#  Technical Details:
+#  A heap is based on an array just as a hashmap is based on an
+#  array. For a heap, the children of an element n are at index
+#  2n+1 for the left child and 2n+2 for the right child.
+#
+#  The movedown function checks that an element is greater than its
+#  children. If not the values of element and child are swapped. The
+#  function continues to check and swap until the element is at a
+#  position where it is greater than its children.
+#======================================================================= 
+ def heapsort( aList ):
+  # convert aList to heap
+  length = len( aList ) - 1
+  leastParent = length / 2
+  for i in range ( leastParent, -1, -1 ):
+    moveDown( aList, i, length )
+ 
+  # flatten heap into sorted array
+  for i in range ( length, 0, -1 ):
+    if aList[0] > aList[i]:
+      swap( aList, 0, i )
+      moveDown( aList, 0, i - 1 )
+ 
+def moveDown( aList, first, last ):
+  largest = 2 * first + 1
+  while largest <= last:
+    # right child exists and is larger than left child
+    if ( largest < last ) and ( aList[largest] < aList[largest + 1] ):
+      largest += 1
+ 
+    # right child is larger than parent
+    if aList[largest] > aList[first]:
+      swap( aList, largest, first )
+      # move down to largest child
+      first = largest;
+      largest = 2 * first + 1
+    else:
+      return # force exit
+  
+def swap( A, x, y ):
+  tmp = A[x]
+  A[x] = A[y]
+  A[y] = tmp
+```
 
 buble sort:
 	Bubble sort is one of the most basic sorting algorithm that is the simplest to understand. It’s basic idea is to bubble up the largest(or smallest), then the 2nd largest and the the 3rd and so on to the end of the list. Each bubble up takes a full sweep through the list
