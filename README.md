@@ -303,9 +303,13 @@ http://www.wiley.com/WileyCDA/WileyTitle/productCd-047012167X.html
 
 ## 6. Sorting
 * know how to sort, bubble-sort least important but know it
+
 * Know all the ni\*log(n) sorting algorithm
+
 * know these for sure:quicksort and merge sort
+
 * know why Merge sort can be highly useful in situations 
+
 * know where quicksort is impractical.
 
 python examples:
@@ -2985,8 +2989,80 @@ if __name__ == '__main__':
 ```
 
 KD tree:
+k-d tree (short for k-dimensional tree) is a space-partitioning data structure for organizing points in a k-dimensional space. k-d trees are a useful data structure for several applications, such as searches involving a multidimensional search key (e.g. range searches and nearest neighbor searches). k-d trees are a special case of binary space partitioning trees.
+
+Time complexity in big O notation
+Algorithm	Average		Worst Case
+Space		O(n)		O(n)
+Search		O(log n)	O(n)
+Insert		O(log n)	O(n)
+Delete		O(log n)	O(n)
+
+examples of use: 
+I've used them as an efficient way to find the nearest neighbors of a given point 
+, you could use a kd-tree to store a collection of points in the Cartesian plane, in
+three-dimensional space, etc. You could also use a kd-tree to store biometric data, for example, by
+representing the data as an ordered tuple, perhaps (height, weight, blood pressure, cholesterol).
+However, a kd-tree cannot be used to store collections of other data types, such as strings. Also
+note that while it's possible to build a kd-tree to hold data of any dimension, all of the data stored in
+a kd-tree must have the same dimension
+
+https://www.youtube.com/watch?v=TLxWtXEbtFE
+
+example:
+
+![KD Tree ex](/../master/images/kdtree1.png?raw=true "KD tree ex")
+![KD Tree ex](/../master/images/kdtree2.png?raw=true "KD tree ex")
+![KD Tree ex](/../master/images/kdtree3.png?raw=true "KD tree ex")
+![KD Tree ex](/../master/images/kdtree4.png?raw=true "KD tree ex")
+![KD Tree ex](/../master/images/kdtree5.png?raw=true "KD tree ex")
+![KD Tree ex](/../master/images/kdtree6.png?raw=true "KD tree ex")
+![KD Tree ex](/../master/images/kdtree7.png?raw=true "KD tree ex")
 
 
+```python 
+from collections import namedtuple
+from operator import itemgetter
+from pprint import pformat
+
+class Node(namedtuple('Node', 'location left_child right_child')):
+    def __repr__(self):
+        return pformat(tuple(self))
+
+def kdtree(point_list, depth=0):
+    try:
+        k = len(point_list[0]) # assumes all points have the same dimension
+    except IndexError as e: # if not point_list:
+        return None
+    # Select axis based on depth so that axis cycles through all valid values
+    axis = depth % k
+ 
+    # Sort point list and choose median as pivot element
+    point_list.sort(key=itemgetter(axis))
+    median = len(point_list) // 2 # choose median
+ 
+    # Create node and construct subtrees
+    return Node(
+        location=point_list[median],
+        left_child=kdtree(point_list[:median], depth + 1),
+        right_child=kdtree(point_list[median + 1:], depth + 1)
+    )
+
+def main():
+    """Example usage"""
+    point_list = [(2,3), (5,4), (9,6), (4,7), (8,1), (7,2)]
+    tree = kdtree(point_list)
+    print(tree)
+
+if __name__ == '__main__':
+    main()
+```
+```
+Output would be:
+((7, 2),
+ ((5, 4), ((2, 3), None, None), ((4, 7), None, None)),
+ ((9, 6), ((8, 1), None, None), None))
+```
 
 ## 9. Graphs
 * 3 basic ways to represent a graph in memory (objects and pointers, matrix, and adjacency list); familiarize yourself with each representation and its pros & cons
