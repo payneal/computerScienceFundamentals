@@ -2311,10 +2311,682 @@ bst.preorder()
 ```
 
 cartesian Tree:
+a type of data structure used in computer science for encoding a sequence of numbers.
+
+find the pivot, which is always going to the smallest number, and then divide the list up into a sublist, where the first index is the current node, the second is the left child, and the third is the right. If left and right are empty, then the singleton list denotes a leaf.
+
+ex.  [9, 3, 7, 1, 8, 12, 10, 20, 15, 18, 5]
+
+The first thing we need to do is find the pivot. As mentioned above, it’s always the smallest number. In this case, 1 is the pivot, so it becomes the root node, since all other elements will become leaves, and this is the first node.
+
+![Cartesian Tree](/../master/images/cartesiantree1.png?raw=true "Cartesian tree ex")
+
+Now, for each new side, we need to do the same thing. So, on the left hand, 3 is the smallest, and on the right, 5 is the smallest.
+
+![Cartesian Tree](/../master/images/cartesiantree2.png?raw=true "Cartesian tree ex")
+
+Visually, this is a bit odd because of spacing, but we can see all the numbers on the right branch (5) are to the left of 5 – it will look better once we finish it.
+
+Next up is left, where there is nothing to be done, since each child of 3 is a leaf, and right, where 8 is smallest.
+
+![Cartesian Tree](/../master/images/cartesiantree3.png?raw=true "Cartesian tree ex")
+
+And again, 10 is now the smallest.
+
+![Cartesian Tree](/../master/images/cartesiantree4.png?raw=true "Cartesian tree ex")
+
+And now, almost done, the right side is left; 15 is the smallest here.
+
+![Cartesian Tree](/../master/images/cartesiantree4.png?raw=true "Cartesian tree ex")
+
+sorting of a cartesian tree
+algo = 
+Construct a Cartesian tree for the input sequence
+Initialize a priority queue, initially containing only the tree root
+While the priority queue is non-empty:
+	Find and remove the minimum value x in the priority queue
+	Add x to the output sequence
+	Add the Cartesian tree children of x to the priority queue
+
+ex. 
+![Cartesian Tree Sorting](/../master/images/cartesianSorting.JPG?raw=true "Cartesian tree sorting ex")
+
+```C++
+// A C++ program to implement Cartesian Tree sort
+// Note that in this program we will build a min-heap
+// Cartesian Tree and not max-heap.
+#include<bits/stdc++.h>
+using namespace std;
+ 
+/* A binary tree node has data, pointer to left child
+   and a pointer to right child */
+struct Node
+{
+    int data;
+    Node *left, *right;
+};
+ 
+// Creating a shortcut for int, Node* pair type
+typedef pair<int, Node*> iNPair;
+ 
+// This function sorts by pushing and popping the
+// Cartesian Tree nodes in a pre-order like fashion
+void pQBasedTraversal(Node* root)
+{
+    // We will use a priority queue to sort the
+    // partially-sorted data efficiently.
+    // Unlike Heap, Cartesian tree makes use of
+    // the fact that the data is partially sorted
+    priority_queue <iNPair, vector<iNPair>, greater<iNPair>> pQueue;
+    pQueue.push (make_pair (root->data,root));
+ 
+    // Resembles a pre-order traverse as first data
+    // is printed then the left and then right child.
+    while (! pQueue.empty())
+    {
+        iNPair popped_pair = pQueue.top();
+        printf("%d ",popped_pair.first);
+ 
+        pQueue.pop();
+ 
+        if (popped_pair.second->left != NULL)
+            pQueue.push (make_pair(popped_pair.second->left->data,
+                                   popped_pair.second->left));
+ 
+        if (popped_pair.second->right != NULL)
+             pQueue.push (make_pair(popped_pair.second->right->data,
+                                    popped_pair.second->right));
+    }
+ 
+    return;
+}
+ 
+ 
+Node *buildCartesianTreeUtil(int root, int arr[],
+           int parent[], int leftchild[], int rightchild[])
+{
+    if (root == -1)
+        return NULL;
+ 
+    Node *temp = new Node;
+ 
+    temp->data = arr[root];
+    temp->left = buildCartesianTreeUtil(leftchild[root],
+                  arr, parent, leftchild, rightchild);
+ 
+    temp->right = buildCartesianTreeUtil(rightchild[root],
+                  arr, parent, leftchild, rightchild);
+ 
+    return temp ;
+}
+ 
+// A function to create the Cartesian Tree in O(N) time
+Node *buildCartesianTree(int arr[], int n)
+{
+    // Arrays to hold the index of parent, left-child,
+    // right-child of each number in the input array
+    int parent[n],leftchild[n],rightchild[n];
+ 
+    // Initialize all array values as -1
+    memset(parent, -1, sizeof(parent));
+    memset(leftchild, -1, sizeof(leftchild));
+    memset(rightchild, -1, sizeof(rightchild));
+ 
+    // 'root' and 'last' stores the index of the root and the
+    // last processed of the Cartesian Tree.
+    // Initially we take root of the Cartesian Tree as the
+    // first element of the input array. This can change
+    // according to the algorithm
+    int root = 0, last;
+ 
+    // Starting from the second element of the input array
+    // to the last on scan across the elements, adding them
+    // one at a time.
+    for (int i=1; i<=n-1; i++)
+    {
+        last = i-1;
+        rightchild[i] = -1;
+ 
+        // Scan upward from the node's parent up to
+        // the root of the tree until a node is found
+        // whose value is smaller than the current one
+        // This is the same as Step 2 mentioned in the
+        // algorithm
+        while (arr[last] >= arr[i] && last != root)
+            last = parent[last];
+ 
+        // arr[i] is the smallest element yet; make it
+        // new root
+        if (arr[last] >= arr[i])
+        {
+            parent[root] = i;
+            leftchild[i] = root;
+            root = i;
+        }
+ 
+        // Just insert it
+        else if (rightchild[last] == -1)
+        {
+            rightchild[last] = i;
+            parent[i] = last;
+            leftchild[i] = -1;
+        }
+ 
+        // Reconfigure links
+        else
+        {
+            parent[rightchild[last]] = i;
+            leftchild[i] = rightchild[last];
+            rightchild[last]= i;
+            parent[i] = last;
+        }
+ 
+    }
+ 
+    // Since the root of the Cartesian Tree has no
+    // parent, so we assign it -1
+    parent[root] = -1;
+ 
+    return (buildCartesianTreeUtil (root, arr, parent,
+                                    leftchild, rightchild));
+}
+ 
+// Sorts an input array
+int printSortedArr(int arr[], int n)
+{
+    // Build a cartesian tree
+    Node *root = buildCartesianTree(arr, n);
+ 
+    printf("The sorted array is-\n");
+ 
+    // Do pr-order traversal and insert
+    // in priority queue
+    pQBasedTraversal(root);
+}
+ 
+/* Driver program to test above functions */
+int main()
+{
+    /*  Given input array- {5,10,40,30,28},
+        it's corresponding unique Cartesian Tree
+        is-
+ 
+        5
+          \
+          10
+            \
+             28
+            /
+          30
+         /
+        40
+    */
+ 
+    int arr[] = {5, 10, 40, 30, 28};
+    int n = sizeof(arr)/sizeof(arr[0]);
+ 
+    printSortedArr(arr, n);
+ 
+    return(0);
+}
+
+```
 
 B-tree:
+Not to be coinfussed with a Binary tree a allows searches, sequential access, insertions, and deletions in logarithmic time. The B-tree is a generalization of a binary search tree in that a node can have more than two children (Comer 1979, p. 123). Unlike self-balancing binary search trees, the B-tree is optimized for systems that read and write large blocks of data. B-trees are a good example of a data structure for external memory. It is commonly used in databases and filesystems.
+
+Time complexity in big O notation
+Algorithm	Average		Worst Case
+Space		O(n)		O(n)
+Search		O(log n)	O(log n)
+Insert		O(log n)	O(log n)
+Delete		O(log n)	O(log n)
+
+advantages: 
+keeps keys in sorted order for sequential traversing
+uses a hierarchical index to minimize the number of disk reads
+uses partially full blocks to speed insertions and deletions
+keeps the index balanced with a recursive algorithm
+In addition, a B-tree minimizes waste by making sure the interior nodes are at least half full. A B-tree can handle an arbitrary number of insertions and deletions.
+
+disadvantages: 
+maximum key length cannot be changed without completely rebuilding the database. This led to many database systems truncating full human names to 70 characters.
+
+https://www.youtube.com/watch?v=coRJrcIYbF4
+
+ex= [2, 4, 5, 6, 8, 10, 12, 14, 16, 18, 20, 22, 24, 26, 28, 30 , 32, 34, 36, 7, 9, 11, , 13]
+
+add 2
+![B Tree ex](/../master/images/btree1.png?raw=true "B tree ex")
+
+add 4
+![B Tree ex](/../master/images/btree2.png?raw=true "B tree ex")
+
+add 5 
+![B Tree ex](/../master/images/btree3.png?raw=true "B tree ex")
+
+add 6 
+![B Tree ex](/../master/images/btree4.png?raw=true "B tree ex")
+
+add 8 
+![B Tree ex](/../master/images/btree5.png?raw=true "B tree ex")
+
+add 10 
+![B Tree ex](/../master/images/btree6.png?raw=true "B tree ex")
+
+add 12 
+![B Tree ex](/../master/images/btree7.png?raw=true "B tree ex")
+
+add 14 
+![B Tree ex](/../master/images/btree8.png?raw=true "B tree ex")
+
+add 16
+![B Tree ex](/../master/images/btree9.png?raw=true "B tree ex")
+
+add 18
+![B Tree ex](/../master/images/btree10.png?raw=true "B tree ex")
+
+add 20
+![B Tree ex](/../master/images/btree11.png?raw=true "B tree ex")
+
+add 22 
+![B Tree ex](/../master/images/btree12.png?raw=true "B tree ex")
+
+add 24
+![B Tree ex](/../master/images/btree13.png?raw=true "B tree ex")
+
+add 26 
+![B Tree ex](/../master/images/btree14.png?raw=true "B tree ex")
+
+add 28 
+![B Tree ex](/../master/images/btree15.png?raw=true "B tree ex")
+
+add 30 
+![B Tree ex](/../master/images/btree16.png?raw=true "B tree ex")
+
+add 32
+![B Tree ex](/../master/images/btree17.png?raw=true "B tree ex")
+
+add 34
+![B Tree ex](/../master/images/btree18.png?raw=true "B tree ex")
+
+add 36 
+![B Tree ex](/../master/images/btree19.png?raw=true "B tree ex")
+
+add 7 
+![B Tree ex](/../master/images/btree20.png?raw=true "B tree ex")
+
+add 9 
+![B Tree ex](/../master/images/btree21.png?raw=true "B tree ex")
+
+add 11 
+![B Tree ex](/../master/images/btree22.png?raw=true "B tree ex")
+
+add 13 
+![B Tree ex](/../master/images/btree23.png?raw=true "B tree ex")
+
+delete 14 
+![B Tree ex](/../master/images/btree24.png?raw=true "B tree ex")
+
+delete 10
+![B Tree ex](/../master/images/btree25 .png?raw=true "B tree ex")
+
+delete 18 
+![B Tree ex](/../master/images/btree26.png?raw=true "B tree ex")
+
+delete 16
+![B Tree ex](/../master/images/btree27.png?raw=true "B tree ex")
+
+delete 24
+![B Tree ex](/../master/images/btree28.png?raw=true "B tree ex")
+
+delete 6
+![B Tree ex](/../master/images/btree29.png?raw=true "B tree ex")
+
+```python
+import bisect
+import itertools
+import operator
+
+class _BNode(object):
+    __slots__ = ["tree", "contents", "children"]
+
+    def __init__(self, tree, contents=None, children=None):
+        self.tree = tree
+        self.contents = contents or []
+        self.children = children or []
+        if self.children:
+            assert len(self.contents) + 1 == len(self.children), \
+                    "one more child than data item required"
+
+    def __repr__(self):
+        name = getattr(self, "children", 0) and "Branch" or "Leaf"
+        return "<%s %s>" % (name, ", ".join(map(str, self.contents)))
+
+    def lateral(self, parent, parent_index, dest, dest_index):
+        if parent_index > dest_index:
+            dest.contents.append(parent.contents[dest_index])
+            parent.contents[dest_index] = self.contents.pop(0)
+            if self.children:
+                dest.children.append(self.children.pop(0))
+        else:
+            dest.contents.insert(0, parent.contents[parent_index])
+            parent.contents[parent_index] = self.contents.pop()
+            if self.children:
+                dest.children.insert(0, self.children.pop())
+
+    def shrink(self, ancestors):
+        parent = None
+
+        if ancestors:
+            parent, parent_index = ancestors.pop()
+            # try to lend to the left neighboring sibling
+            if parent_index:
+                left_sib = parent.children[parent_index - 1]
+                if len(left_sib.contents) < self.tree.order:
+                    self.lateral(
+                            parent, parent_index, left_sib, parent_index - 1)
+                    return
+
+            # try the right neighbor
+            if parent_index + 1 < len(parent.children):
+                right_sib = parent.children[parent_index + 1]
+                if len(right_sib.contents) < self.tree.order:
+                    self.lateral(
+                            parent, parent_index, right_sib, parent_index + 1)
+                    return
+
+        center = len(self.contents) // 2
+        sibling, push = self.split()
+
+        if not parent:
+            parent, parent_index = self.tree.BRANCH(
+                    self.tree, children=[self]), 0
+            self.tree._root = parent
+
+        # pass the median up to the parent
+        parent.contents.insert(parent_index, push)
+        parent.children.insert(parent_index + 1, sibling)
+        if len(parent.contents) > parent.tree.order:
+            parent.shrink(ancestors)
+
+    def grow(self, ancestors):
+        parent, parent_index = ancestors.pop()
+
+        minimum = self.tree.order // 2
+        left_sib = right_sib = None
+
+        # try to borrow from the right sibling
+        if parent_index + 1 < len(parent.children):
+            right_sib = parent.children[parent_index + 1]
+            if len(right_sib.contents) > minimum:
+                right_sib.lateral(parent, parent_index + 1, self, parent_index)
+                return
+
+        # try to borrow from the left sibling
+        if parent_index:
+            left_sib = parent.children[parent_index - 1]
+            if len(left_sib.contents) > minimum:
+                left_sib.lateral(parent, parent_index - 1, self, parent_index)
+                return
+
+        # consolidate with a sibling - try left first
+        if left_sib:
+            left_sib.contents.append(parent.contents[parent_index - 1])
+            left_sib.contents.extend(self.contents)
+            if self.children:
+                left_sib.children.extend(self.children)
+            parent.contents.pop(parent_index - 1)
+            parent.children.pop(parent_index)
+        else:
+            self.contents.append(parent.contents[parent_index])
+            self.contents.extend(right_sib.contents)
+            if self.children:
+                self.children.extend(right_sib.children)
+            parent.contents.pop(parent_index)
+            parent.children.pop(parent_index + 1)
+
+        if len(parent.contents) < minimum:
+            if ancestors:
+                # parent is not the root
+                parent.grow(ancestors)
+            elif not parent.contents:
+                # parent is root, and its now empty
+                self.tree._root = left_sib or self
+
+    def split(self):
+        center = len(self.contents) // 2
+        median = self.contents[center]
+        sibling = type(self)(
+                self.tree,
+                self.contents[center + 1:],
+                self.children[center + 1:])
+        self.contents = self.contents[:center]
+        self.children = self.children[:center + 1]
+        return sibling, median
+
+    def insert(self, index, item, ancestors):
+        self.contents.insert(index, item)
+        if len(self.contents) > self.tree.order:
+            self.shrink(ancestors)
+
+    def remove(self, index, ancestors):
+        minimum = self.tree.order // 2
+
+        if self.children:
+            # try promoting from the right subtree first,
+            # but only if it won't have to resize
+            additional_ancestors = [(self, index + 1)]
+            descendent = self.children[index + 1]
+            while descendent.children:
+                additional_ancestors.append((descendent, 0))
+                descendent = descendent.children[0]
+            if len(descendent.contents) > minimum:
+                ancestors.extend(additional_ancestors)
+                self.contents[index] = descendent.contents[0]
+                descendent.remove(0, ancestors)
+                return
+
+            # fall back to the left child
+            additional_ancestors = [(self, index)]
+            descendent = self.children[index]
+            while descendent.children:
+                additional_ancestors.append(
+                        (descendent, len(descendent.children) - 1))
+                descendent = descendent.children[-1]
+            ancestors.extend(additional_ancestors)
+            self.contents[index] = descendent.contents[-1]
+            descendent.remove(len(descendent.children) - 1, ancestors)
+        else:
+            self.contents.pop(index)
+            if len(self.contents) < minimum and ancestors:
+                self.grow(ancestors)
+
+class BTree(object):
+    BRANCH = LEAF = _BNode
+
+    def __init__(self, order):
+        self.order = order
+        self._root = self._bottom = self.LEAF(self)
+
+    def _path_to(self, item):
+        current = self._root
+        ancestry = []
+
+        while getattr(current, "children", None):
+            index = bisect.bisect_left(current.contents, item)
+            ancestry.append((current, index))
+            if index < len(current.contents) \
+                    and current.contents[index] == item:
+                return ancestry
+            current = current.children[index]
+
+        index = bisect.bisect_left(current.contents, item)
+        ancestry.append((current, index))
+        present = index < len(current.contents)
+        present = present and current.contents[index] == item
+
+        return ancestry
+
+    def _present(self, item, ancestors):
+        last, index = ancestors[-1]
+        return index < len(last.contents) and last.contents[index] == item
+
+    def insert(self, item):
+        current = self._root
+        ancestors = self._path_to(item)
+        node, index = ancestors[-1]
+        while getattr(node, "children", None):
+            node = node.children[index]
+            index = bisect.bisect_left(node.contents, item)
+            ancestors.append((node, index))
+        node, index = ancestors.pop()
+        node.insert(index, item, ancestors)
+
+    def remove(self, item):
+        current = self._root
+        ancestors = self._path_to(item)
+
+        if self._present(item, ancestors):
+            node, index = ancestors.pop()
+            node.remove(index, ancestors)
+        else:
+            raise ValueError("%r not in %s" % (item, self.__class__.__name__))
+
+    def __contains__(self, item):
+        return self._present(item, self._path_to(item))
+
+    def __iter__(self):
+        def _recurse(node):
+            if node.children:
+                for child, item in zip(node.children, node.contents):
+                    for child_item in _recurse(child):
+                        yield child_item
+                    yield item
+                for child_item in _recurse(node.children[-1]):
+                    yield child_item
+            else:
+                for item in node.contents:
+                    yield item
+
+        for item in _recurse(self._root):
+            yield item
+
+    def __repr__(self):
+        def recurse(node, accum, depth):
+            accum.append(("  " * depth) + repr(node))
+            for node in getattr(node, "children", []):
+                recurse(node, accum, depth + 1)
+
+        accum = []
+        recurse(self._root, accum, 0)
+        return "\n".join(accum)
+
+    @classmethod
+    def bulkload(cls, items, order):
+        tree = object.__new__(cls)
+        tree.order = order
+
+        leaves = tree._build_bulkloaded_leaves(items)
+        tree._build_bulkloaded_branches(leaves)
+
+        return tree
+
+    def _build_bulkloaded_leaves(self, items):
+        minimum = self.order // 2
+        leaves, seps = [[]], []
+
+        for item in items:
+            if len(leaves[-1]) < self.order:
+                leaves[-1].append(item)
+            else:
+                seps.append(item)
+                leaves.append([])
+
+        if len(leaves[-1]) < minimum and seps:
+            last_two = leaves[-2] + [seps.pop()] + leaves[-1]
+            leaves[-2] = last_two[:minimum]
+            leaves[-1] = last_two[minimum + 1:]
+            seps.append(last_two[minimum])
+
+        return [self.LEAF(self, contents=node) for node in leaves], seps
+
+    def _build_bulkloaded_branches(self, (leaves, seps)):
+        minimum = self.order // 2
+        levels = [leaves]
+
+        while len(seps) > self.order + 1:
+            items, nodes, seps = seps, [[]], []
+
+            for item in items:
+                if len(nodes[-1]) < self.order:
+                    nodes[-1].append(item)
+                else:
+                    seps.append(item)
+                    nodes.append([])
+
+            if len(nodes[-1]) < minimum and seps:
+                last_two = nodes[-2] + [seps.pop()] + nodes[-1]
+                nodes[-2] = last_two[:minimum]
+                nodes[-1] = last_two[minimum + 1:]
+                seps.append(last_two[minimum])
+
+            offset = 0
+            for i, node in enumerate(nodes):
+                children = levels[-1][offset:offset + len(node) + 1]
+                nodes[i] = self.BRANCH(self, contents=node, children=children)
+                offset += len(node) + 1
+
+            levels.append(nodes)
+
+        self._root = self.BRANCH(self, contents=seps, children=levels[-1])
+
+import random
+import unittest
+
+
+class BTreeTests(unittest.TestCase):
+    def test_additions(self):
+        bt = BTree(20)
+        l = range(2000)
+        for i, item in enumerate(l):
+            bt.insert(item)
+            self.assertEqual(list(bt), l[:i + 1])
+
+    def test_bulkloads(self):
+        bt = BTree.bulkload(range(2000), 20)
+        self.assertEqual(list(bt), range(2000))
+
+    def test_removals(self):
+        bt = BTree(20)
+        l = range(2000)
+        map(bt.insert, l)
+        rand = l[:]
+        random.shuffle(rand)
+        while l:
+            self.assertEqual(list(bt), l)
+            rem = rand.pop()
+            l.remove(rem)
+            bt.remove(rem)
+        self.assertEqual(list(bt), l)
+
+    def test_insert_regression(self):
+        bt = BTree.bulkload(range(2000), 50)
+
+        for i in xrange(100000):
+            bt.insert(random.randrange(2000))
+
+if __name__ == '__main__':
+    #unittest.main()
+    b = BTree(2)
+    for i in xrange(0,20):
+        b.insert(i)
+    print b
+```
 
 KD tree:
+
+
 
 ## 9. Graphs
 * 3 basic ways to represent a graph in memory (objects and pointers, matrix, and adjacency list); familiarize yourself with each representation and its pros & cons
