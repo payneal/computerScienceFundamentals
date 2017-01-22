@@ -1099,14 +1099,814 @@ print('Ming: ' + h.get('Ming'))
 ```
 
 ## 8. Trees
-*  basic tree construction, traversal and manipulation algorithms.
-* Familiarize yourself with binary trees, n-ary trees, and trie-trees
-* Be familiar with at least one type of balanced binary tree, whether it's a red/black tree, a splay tree or an AVL tree, and know how it's implemented
-* Understand tree traversal algorithms: BFS and DFS, and know the difference between inorder, postorder and preorder.
+*  basic tree construction
+a tree is a (possibly non linear data structure made up of nodes or vertices and edges without having any cycle. The tree with no nodes is calle dthe null or empty tree. A tree that is not empty consists of a root node and potentially many levels of additional nodes that form a hierachy
 
-python examples:
+```python 
+class BinaryTree():
+
+    def __init__(self,rootid):
+      self.left = None
+      self.right = None
+      self.rootid = rootid
+
+    def getLeftChild(self):
+        return self.left
+    def getRightChild(self):
+        return self.right
+    def setNodeValue(self,value):
+        self.rootid = value
+    def getNodeValue(self):
+        return self.rootid
+```
+
+* traversal and manipulation algorithms.
+usage patterns can be divided into the three ways that we access the nodes of the tree. There are three commonly used patterns to visit all the nodes in a tree. The difference between these patterns is the order in which each node is visited. We call this visitation of the nodes a “traversal.” The three traversals we will look at are called preorder, inorder, and postorder.
+
+preorder - In a preorder traversal, we visit the root node first, then recursively do a preorder traversal of the left subtree, followed by a recursive preorder traversal of the right subtree.
+
+```python 
+def preorder(tree):
+    if tree:
+        print(tree.getNodeVal())
+        preorder(tree.getLeftChild())
+        preorder(tree.getRightChild())
+```
+
+inorder - In an inorder traversal, we recursively do an inorder traversal on the left subtree, visit the root node, and finally do a recursive inorder traversal of the right subtree.
+```python
+def inorder(tree):
+  if tree != None:
+      inorder(tree.getLeftChild())
+      print(tree.getRootVal())
+      inorder(tree.getRightChild())
+```
+
+postorder- In a postorder traversal, we recursively do a postorder traversal of the left subtree and the right subtree followed by a visit to the root node.
+
+```python
+def postorder(tree):
+    if tree != None:
+        postorder(tree.getLeftChild())
+        postorder(tree.getRightChild())
+        print(tree.getRootVal())
+```
+
+* Familiarize yourself with binary trees, n-ary trees, and trie-trees
+
+binary trees = each node can have at most 2 children
+https://www.youtube.com/watch?v=H5JubkIy_p8
+![Binary Tree](/../master/images/binarytree.png?raw=true "binary tree")
+	strict/Proper Binary tree --> each node can have either 2 or 0 children
+	complete binary tree --> all levels except possibly the last are completely filled and all nodes are as left as possible
+
+n-ary trees = trees to allow each parent to store references to any number of children. Such trees are called N-ary trees, and we can use them to represent the tree structure of a file system, where every node is either a file, or a folder (that can include other files and folders).
+Here is an example of an N-ary tree representing a directory tree (with folder names in pink and file names in white)
+
+trie-trees =  trees often used to store characters(great for word validation problems)
+![Trie-trees](/../master/images/trie-trees1.png?raw=true "trie-trees ex")
+![Trie-trees](/../master/images/trie-trees2.png?raw=true "trie-trees ex")
+![Trie-trees](/../master/images/trie-trees3.png?raw=true "trie-trees ex")
+
+
+* Be familiar with at least one type of balanced binary tree, whether it's a red/black tree, a splay tree or an AVL tree, and know how it's implemented
+
+balanced binary trees: guaranteed hight of )(log n) for n items
+
+red/black tree = 
+a node is either red or blck
+the root and leaves(nil) are black
+if a node us red, then its children are black
+all paths from a note to its NIL descendants contain the smae number of black nodes
+
+![red-black tree](/../master/images/redblacktree1.png?raw=true "red black tree ex")
+
+3 main operations are= 	search, time complexity = O(log n)  
+			insert(require rotation), time complexity = O(log n)
+			remove(require rotation) time complexity = O(log n)
+space complexity = O(n)
+
+![red-black ex](/../master/images/redblackex1.png?raw=true "red black ex")
+![red-black ex](/../master/images/redblackex2.png?raw=true "red black ex")
+![red-black ex](/../master/images/redblackex3.png?raw=true "red black ex")
+![red-black ex](/../master/images/redblackex4.png?raw=true "red black ex")
+![red-black ex](/../master/images/redblackex5.png?raw=true "red black ex")
+![red-black ex](/../master/images/redblackex6.png?raw=true "red black ex")
+![red-black ex](/../master/images/redblackex7.png?raw=true "red black ex")
+![red-black ex](/../master/images/redblackex8.png?raw=true "red black ex")
+![red-black ex](/../master/images/redblackex9.png?raw=true "red black ex")
+![red-black ex](/../master/images/redblackex10.png?raw=true "red black ex")
+![red-black ex](/../master/images/redblackex11.png?raw=true "red black ex")
+![red-black ex](/../master/images/redblackex12.png?raw=true "red black ex")
+![red-black ex](/../master/images/redblackex13.png?raw=true "red black ex")
+![red-black ex](/../master/images/redblackex14.png?raw=true "red black ex")
+![red-black ex](/../master/images/redblackex15.png?raw=true "red black ex")
+![red-black ex](/../master/images/redblackex16.png?raw=true "red black ex")
+![red-black ex](/../master/images/redblackex17.png?raw=true "red black ex")
+
+```python
+class RedBlackTree(object):
+	  def __init__(self):
+	    self._tree = None
+
+	  def Insert(self, n):
+	    if self._tree == None:
+	      self._tree = RedBlackTreeNode(n)
+	      self._tree.SetColor("Black")
+	    else:
+	      self._tree = self._tree.Insert(n)
+
+	  def Print(self):
+	    if self._tree == None:
+	      print "Empty"
+	    else:
+	      self._tree.Print(1)
+
+
+	class RedBlackTreeNode(object):
+	  def __init__(self, value):
+	    self._left = None
+	    self._right = None
+	    self._value = value
+	    self.SetColor("Red")
+	    self._parent = None
+
+	  def GetParent(self):
+	    return self._parent
+
+	  def SetParent(self, parent):
+	      self._parent = parent
+
+	  def GetColor(self):
+	    return self._color
+
+	  def SetColor(self, color):
+	      self._color = color
+
+	  def GetLeft(self):
+	      return self._left
+
+	  def SetLeft(self, left):
+	      self._left = left
+
+	  def GetRight(self):
+	      return self._right
+
+	  def SetRight(self, right):
+	      self._right = right
+
+	  def GetGrandParent(self):
+	    if self.GetParent() != None:
+	      return self.GetParent().GetParent()
+	    else:
+	        return None
+
+	  def GetUncle(self):
+	    grand = self.GetGrandParent()
+	    if grand is not None:
+	      if grand.GetLeft() == self.GetParent():
+	        return grand.GetRight()
+	      else:
+	        return grand.GetLeft()
+	    else:
+	      return None
+
+	  def Rebalance(self):     
+	      # WP case 1: tree root
+	      if self.GetParent() is None:
+	        self.SetColor("Black")
+	        return self
+	      # WP case 2: The parent of the target node is BLACK,
+	      #   so the tree is in fine balance shape; just return the
+	      #   tree root
+	      if self.GetParent().GetColor() == "Black":
+	          return self.GetRoot()
+	      # From here on, we know that parent is Red.
+	      # WP Case 3:  self, parent, and uncle are all red.
+	      if self.GetUncle() is not None and self.GetUncle().GetColor() == "Red":
+	          self.GetUncle().SetColor("Black")
+	          self.GetParent().SetColor("Black")
+	          self.GetGrandParent().SetColor("Red")
+	          return self.GetGrandParent().Rebalance()
+	      # By now, we know that self and parent are red; and the uncle is black.
+	      # We also know that the grandparent is not None, because if it were, the
+	      # parent would be root, which must be black. So this means that we 
+	      # need to do a pivot on the parent
+	      return self.PivotAndRebalance()
+
+	  def GetRoot(self):
+	    if self.GetParent() is None:
+	      return self
+	    else:
+	      return self.GetParent().GetRoot()
+
+
+	  def PivotAndRebalance(self):
+	    # First, distinguish between the case where where my parent is
+	    # a left child or a right child.
+	    if self.GetGrandParent().GetLeft() == self.GetParent():
+	      if self.GetParent().GetRight() == self:
+	        # WP case 4: I'm the right child of my parent, and my parent is the
+	        # left child of my grandparent. Pivot right around me.
+	        return self.PivotLeft(False)
+	      else:
+	        # WP case 5
+	        # If I'm the left child, and my parent is the left child, then
+	        # pivot right around my parent.
+	        return self.GetParent().PivotRight(True)
+	    else: # My parent is the right child.
+	      if self.GetParent().GetLeft() == self:
+	        # WP case 4, reverse.
+	        return self.PivotRight(False)
+	      else:
+	        # WY case 5 reverse
+	        return self.GetParent().PivotLeft(True)
+
+
+	  def PivotRight(self, recolor):
+	      # Hurrah, I'm going to be the new root of the subtree!
+	      left = self.GetLeft()
+	      right = self.GetRight()
+	      parent = self.GetParent()
+	      grand = self.GetGrandParent()
+	      # move my right child to be the left of my soon-to-be former parent.
+	      parent.SetLeft(right)
+	      if right is not None:
+	          right.SetParent(parent)
+	      # Move up, and make my old parent my right child.
+	      self.SetParent(grand)
+	      if grand is not None:
+	        if  grand.GetRight(parent)  == parent:
+	          grand.SetRight(self)
+	        else:
+	          grand.SetLeft(self)
+	      self.SetRight(parent)
+	      parent.SetParent(self)
+	      if recolor is True:
+	          parent.SetColor("Red")
+	          self.SetColor("Black")
+	          return self.GetRoot()
+	      else:
+	        # rebalance from the new position of my former parent.
+	        return parent.Rebalance()
+
+	  def PivotLeft(self, recolor):
+	      # Hurrah, I'm going to be the new root of the subtree!
+	      left = self.GetLeft()
+	      right = self.GetRight()
+	      parent = self.GetParent()
+	      grand = self.GetGrandParent()
+	      # move my left child to be the right of my soon-to-be former parent.
+	      parent.SetRight(left)
+	      if left is not None:
+	          left.SetParent(parent)
+	      # Move up, and make my old parent my right child.
+	      self.SetParent(grand)
+	      if grand is not None:
+	        if  grand.GetRight() == parent:
+	          grand.SetRight(self)
+	        else:
+	          grand.SetLeft(self)
+	      self.SetLeft(parent)
+	      parent.SetParent(self)
+	      if recolor is True:
+	        parent.SetColor("Red")
+	        self.SetColor("Black")
+	        return self.GetRoot()
+	      else:
+	        # rebalance from the position of my former parent.
+	        return parent.Rebalance()
+
+
+	  def Insert(self, value):
+	    if self._value > value:
+	      if self.GetLeft() is None:
+	        self.SetLeft(RedBlackTreeNode(value))
+	        self.GetLeft().SetParent(self)
+	        return self.GetLeft().Rebalance()
+	      else:
+	        return self.GetLeft().Insert(value)
+	    else:
+	      if self.GetRight() is None:
+	        self.SetRight(RedBlackTreeNode(value))
+	        self.GetRight().SetParent(self)
+	        return self.GetRight().Rebalance()        
+	      else:
+	        return self.GetRight().Insert(value)
+
+	  def Print(self, indent):
+	    for i in range(indent):
+	      print "  ",
+	    print "%s (%s)" % (self._value, self.GetColor())
+	    if self.GetLeft() is None:
+	      for i in range(indent+1):
+	        print "  ",
+	      print "None(Black)"
+	    else:
+	      self.GetLeft().Print(indent+1)
+	    if self.GetRight() is None:
+	      for i in range(indent+1):
+	        print "  ",
+	      print "None(Black)"
+	    else:
+	      self.GetRight().Print(indent+1)
+	      
+# For a quick example of creating and populating, here’s code to generatethe red-black tree used an an example above.
+
+	b = RedBlackTree()
+	for i in range(10):
+	    b.Insert(i)
+	b.Print()
+```
+
+splay tree = A splay tree is a self-adjusting binary search tree with the additional property that recently accessed elements are quick to access again. It performs basic operations such as insertion, look-up and removal in O(log n) amortized time.
+
+
+Insert: O(log n)	Search: O(log n)
+Delete: O(log n)	Algorithm: Average
+
+splay tree example 
+https://www.youtube.com/watch?v=nKZWL9hbcI4
+
+insert 10
+
+insert 20
+
+zig left
+
+insert 30
+
+zig left
+
+insert 40
+
+ zig left
+ 
+ insert 25 
+ 
+ zig-zag right 
+ 
+ zig right 
+ 
+ insert 15 
+ 
+ zig-zag right 
+ 
+ zig right 
+ 
+ insert 120
+ 
+ zig-zag left
+ 
+ zig left 
+ 
+ find 25 
+ 
+ zig-zag left
+ 
+ zig right 
+ 
+ delete 15 
+ 
+ zig right
+ 
+ remove root 
+ 
+ largest element in left tree to root
+ 
+ 
+```python 
+# splay tree
+class Node:
+    def __init__(self, key):
+        self.key = key
+        self.left = self.right = None
+
+    def equals(self, node):
+        return self.key == node.key
+
+class SplayTree:
+    def __init__(self):
+        self.root = None
+        self.header = Node(None) #For splay()
+
+    def insert(self, key):
+        if (self.root == None):
+            self.root = Node(key)
+            return
+
+        self.splay(key)
+        if self.root.key == key:
+            # If the key is already there in the tree, don't do anything.
+            return
+
+        n = Node(key)
+        if key < self.root.key:
+            n.left = self.root.left
+            n.right = self.root
+            self.root.left = None
+        else:
+            n.right = self.root.right
+            n.left = self.root
+            self.root.right = None
+        self.root = n
+
+    def remove(self, key):
+        self.splay(key)
+        if key != self.root.key:
+            raise 'key not found in tree'
+
+        # Now delete the root.
+        if self.root.left== None:
+            self.root = self.root.right
+        else:
+            x = self.root.right
+            self.root = self.root.left
+            self.splay(key)
+            self.root.right = x
+
+    def findMin(self):
+        if self.root == None:
+            return None
+        x = self.root
+        while x.left != None:
+            x = x.left
+        self.splay(x.key)
+        return x.key
+
+    def findMax(self):
+        if self.root == None:
+            return None
+        x = self.root
+        while (x.right != None):
+            x = x.right
+        self.splay(x.key)
+        return x.key
+
+    def find(self, key):
+        if self.root == None:
+            return None
+        self.splay(key)
+        if self.root.key != key:
+            return None
+        return self.root.key
+
+    def isEmpty(self):
+        return self.root == None
+    
+    def splay(self, key):
+        l = r = self.header
+        t = self.root
+        self.header.left = self.header.right = None
+        while True:
+            if key < t.key:
+                if t.left == None:
+                    break
+                if key < t.left.key:
+                    y = t.left
+                    t.left = y.right
+                    y.right = t
+                    t = y
+                    if t.left == None:
+                        break
+                r.left = t
+                r = t
+                t = t.left
+            elif key > t.key:
+                if t.right == None:
+                    break
+                if key > t.right.key:
+                    y = t.right
+                    t.right = y.left
+                    y.left = t
+                    t = y
+                    if t.right == None:
+                        break
+                l.right = t
+                l = t
+                t = t.right
+            else:
+                break
+        l.right = t.left
+        r.left = t.right
+        t.left = self.header.right
+        t.right = self.header.left
+        self.root = t
+```
+
+AVL tree = 
+
+
+* Understand tree traversal algorithms: BFS and DFS, and know the difference between inorder, postorder and preorder.
+Breadth First Traversal(level order) = referes to traversing the tree nodes in a level by level fashion
+
+![Breadth First Traversal](/../master/images/breadthfirsttraversal.png?raw=true "Breadth First Traversal ex")
+use BFS when you need to find the shortest path in a unweighted graph
+
+Depth first Traversal = is an algorithm for traversing or searching tree or graph data structures. One starts at the root (selecting some arbitrary node as the root in the case of a graph) and explores as far as possible along each branch before backtracking.
+
+Preorder traversal - Root, left, Right
+![Preorder Traversal](/../master/images/preordertraversal.png?raw=true "Preorder Traversal ex")
+	
+Inorder traversal - Left, Root, Right
+![Inorder Traversal](/../master/images/inordertraversal.png?raw=true "Inorder Traversal ex")
+	
+Postorder Traversal - left, right, root
+![Postorder Traversal](/../master/images/postordertraversal.png?raw=true "Postorder Traversal ex")
+	
+```python
+# depth First Search
+
+class Vertex:
+	def __init__(self, n):
+		self.name = n
+		self.neighbors = list()
+		
+		self.discovery = 0
+		self.finish = 0
+		self.color = 'black'
+	
+	def add_neighbor(self, v):
+		if v not in self.neighbors:
+			self.neighbors.append(v)
+			self.neighbors.sort()
+
+class Graph:
+	vertices = {}
+	time = 0
+	
+	def add_vertex(self, vertex):
+		if isinstance(vertex, Vertex) and vertex.name not in self.vertices:
+			self.vertices[vertex.name] = vertex
+			return True
+		else:
+			return False
+	
+	def add_edge(self, u, v):
+		if u in self.vertices and v in self.vertices:
+			for key, value in self.vertices.items():
+				if key == u:
+					value.add_neighbor(v)
+				if key == v:
+					value.add_neighbor(u)
+			return True
+		else:
+			return False
+			
+	def print_graph(self):
+		for key in sorted(list(self.vertices.keys())):
+			print(key + str(self.vertices[key].neighbors) + "  " + str(self.vertices[key].discovery) + "/" + str(self.vertices[key].finish))
+
+	def _dfs(self, vertex):
+		global time
+		vertex.color = 'red'
+		vertex.discovery = time
+		time += 1
+		for v in vertex.neighbors:
+			if self.vertices[v].color == 'black':
+				self._dfs(self.vertices[v])
+		vertex.color = 'blue'
+		vertex.finish = time
+		time += 1
+		
+	def dfs(self, vertex):
+		global time
+		time = 1
+		self._dfs(vertex)
+			
+g = Graph()
+# print(str(len(g.vertices)))
+a = Vertex('A')
+g.add_vertex(a)
+g.add_vertex(Vertex('B'))
+for i in range(ord('A'), ord('K')):
+	g.add_vertex(Vertex(chr(i)))
+
+edges = ['AB', 'AE', 'BF', 'CG', 'DE', 'DH', 'EH', 'FG', 'FI', 'FJ', 'GJ', 'HI']
+for edge in edges:
+	g.add_edge(edge[:1], edge[1:])
+	
+g.dfs(a)
+g.print_graph()
+
+```
 
 binary search Tree:
+orderd, or sorted, binary trees
+nodes can have 2 subtrees
+items to the left of a given node are smaller
+items to the right of a given node are larger
+
+ allow fast lookup, addition and removal of items, and can be used to implement either dynamic sets of items, or lookup tables that allow finding an item by its key (e.g., finding the phone number of a person by name).
+ 
+ The major advantage of binary search trees over other data structures is that the related sorting algorithms and search algorithms such as in-order traversal can be very efficient; they are also easy to code.
+
+Binary search trees are a fundamental data structure used to construct more abstract data structures such as sets, multisets, and associative arrays. Some of their disadvantages are as follows:
+
+The shape of the binary search tree depends entirely on the order of insertions and deletions, and can become degenerate.
+When inserting or searching for an element in a binary search tree, the key of each visited node has to be compared with the key of the element to be inserted or found.
+The keys in the binary search tree may be long and the run time may increase.
+After a long intermixed sequence of random insertion and deletion, the expected height of the tree approaches square root of the number of keys, √n, which grows much faster than log n.
+
+```python
+# Binary Search Tree in Python
+class Node:
+	def __init__(self, val):
+		self.value = val
+		self.leftChild = None
+		self.rightChild = None
+		
+	def insert(self, data):
+		if self.value == data:
+			return False
+			
+		elif self.value > data:
+			if self.leftChild:
+				return self.leftChild.insert(data)
+			else:
+				self.leftChild = Node(data)
+				return True
+
+		else:
+			if self.rightChild:
+				return self.rightChild.insert(data)
+			else:
+				self.rightChild = Node(data)
+				return True
+				
+	def find(self, data):
+		if(self.value == data):
+			return True
+		elif self.value > data:
+			if self.leftChild:
+				return self.leftChild.find(data)
+			else:
+				return False
+		else:
+			if self.rightChild:
+				return self.rightChild.find(data)
+			else:
+				return False
+
+	def preorder(self):
+		if self:
+			print (str(self.value))
+			if self.leftChild:
+				self.leftChild.preorder()
+			if self.rightChild:
+				self.rightChild.preorder()
+
+	def postorder(self):
+		if self:
+			if self.leftChild:
+				self.leftChild.postorder()
+			if self.rightChild:
+				self.rightChild.postorder()
+			print (str(self.value))
+
+	def inorder(self):
+		if self:
+			if self.leftChild:
+				self.leftChild.inorder()
+			print (str(self.value))
+			if self.rightChild:
+				self.rightChild.inorder()
+
+class Tree:
+	def __init__(self):
+		self.root = None
+
+	def insert(self, data):
+		if self.root:
+			return self.root.insert(data)
+		else:
+			self.root = Node(data)
+			return True
+
+	def find(self, data):
+		if self.root:
+			return self.root.find(data)
+		else:
+			return False
+	
+	def remove(self, data):
+		# empty tree
+		if self.root is None:
+			return False
+			
+		# data is in root node	
+		elif self.root.value == data:
+			if self.root.leftChild is None and self.root.rightChild is None:
+				self.root = None
+			elif self.root.leftChild and self.root.rightChild is None:
+				self.root = self.root.leftChild
+			elif self.root.leftChild is None and self.root.rightChild:
+				self.root = self.root.rightChild
+			elif self.root.leftChild and self.root.rightChild:
+				delNodeParent = self.root
+				delNode = self.root.rightChild
+				while delNode.leftChild:
+					delNodeParent = delNode
+					delNode = delNode.leftChild
+					
+				self.root.value = delNode.value
+				if delNode.rightChild:
+					if delNodeParent.value > delNode.value:
+						delNodeParent.leftChild = delNode.rightChild
+					elif delNodeParent.value < delNode.value:
+						delNodeParent.rightChild = delNode.rightChild
+				else:
+					if delNode.value < delNodeParent.value:
+						delNodeParent.leftChild = None
+					else:
+						delNodeParent.rightChild = None
+						
+			return True
+		
+		parent = None
+		node = self.root
+		
+		# find node to remove
+		while node and node.value != data:
+			parent = node
+			if data < node.value:
+				node = node.leftChild
+			elif data > node.value:
+				node = node.rightChild
+		
+		# case 1: data not found
+		if node is None or node.value != data:
+			return False
+			
+		# case 2: remove-node has no children
+		elif node.leftChild is None and node.rightChild is None:
+			if data < parent.value:
+				parent.leftChild = None
+			else:
+				parent.rightChild = None
+			return True
+			
+		# case 3: remove-node has left child only
+		elif node.leftChild and node.rightChild is None:
+			if data < parent.value:
+				parent.leftChild = node.leftChild
+			else:
+				parent.rightChild = node.leftChild
+			return True
+			
+		# case 4: remove-node has right child only
+		elif node.leftChild is None and node.rightChild:
+			if data < parent.value:
+				parent.leftChild = node.rightChild
+			else:
+				parent.rightChild = node.rightChild
+			return True
+			
+		# case 5: remove-node has left and right children
+		else:
+			delNodeParent = node
+			delNode = node.rightChild
+			while delNode.leftChild:
+				delNodeParent = delNode
+				delNode = delNode.leftChild
+				
+			node.value = delNode.value
+			if delNode.rightChild:
+				if delNodeParent.value > delNode.value:
+					delNodeParent.leftChild = delNode.rightChild
+				elif delNodeParent.value < delNode.value:
+					delNodeParent.rightChild = delNode.rightChild
+			else:
+				if delNode.value < delNodeParent.value:
+					delNodeParent.leftChild = None
+				else:
+					delNodeParent.rightChild = None
+
+	def preorder(self):
+		if self.root is not None:
+			print("PreOrder")
+			self.root.preorder()
+        
+	def postorder(self):
+		if self.root is not None:
+			print("PostOrder")
+			self.root.postorder()
+			
+	def inorder(self):
+		if self.root is not None:
+			print("InOrder")
+			self.root.inorder()
+
+bst = Tree()
+print(bst.insert(10))
+
+bst.preorder()
+#bst.postorder()
+#bst.inorder()
+print(bst.remove(10))
+bst.preorder()
+			
+```
 
 cartesian Tree:
 
