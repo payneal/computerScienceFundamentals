@@ -2629,7 +2629,7 @@ delete 14
 ![B Tree ex](/../master/images/btree24.png?raw=true "B tree ex")
 
 delete 10
-![B Tree ex](/../master/images/btree25 .png?raw=true "B tree ex")
+![B Tree ex](/../master/images/btree25.png?raw=true "B tree ex")
 
 delete 18 
 ![B Tree ex](/../master/images/btree26.png?raw=true "B tree ex")
