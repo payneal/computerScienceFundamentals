@@ -1429,51 +1429,73 @@ splay tree example
 https://www.youtube.com/watch?v=nKZWL9hbcI4
 
 insert 10
+![splay tree ex](/../master/images/splaytree1.png?raw=true "splay tree ex")
 
 insert 20
+![splay tree ex](/../master/images/splaytree2.png?raw=true "splay tree ex")
 
 zig left
+![splay tree ex](/../master/images/splaytree3.png?raw=true "splay tree ex")
 
 insert 30
+![splay tree ex](/../master/images/splaytree4.png?raw=true "splay tree ex")
 
 zig left
+![splay tree ex](/../master/images/splaytree5.png?raw=true "splay tree ex")
 
 insert 40
+![splay tree ex](/../master/images/splaytree6.png?raw=true "splay tree ex")
 
  zig left
+![splay tree ex](/../master/images/splaytree7.png?raw=true "splay tree ex")
  
  insert 25 
+ ![splay tree ex](/../master/images/splaytree8.png?raw=true "splay tree ex")
  
  zig-zag right 
- 
+ ![splay tree ex](/../master/images/splaytree9.png?raw=true "splay tree ex")
+
  zig right 
- 
+  ![splay tree ex](/../master/images/splaytree10.png?raw=true "splay tree ex")
+
  insert 15 
+ ![splay tree ex](/../master/images/splaytree11.png?raw=true "splay tree ex")
  
  zig-zag right 
+ ![splay tree ex](/../master/images/splaytree12.png?raw=true "splay tree ex")
  
  zig right 
+ ![splay tree ex](/../master/images/splaytree13.png?raw=true "splay tree ex")
  
  insert 120
+ ![splay tree ex](/../master/images/splaytree14.png?raw=true "splay tree ex")
  
  zig-zag left
+ ![splay tree ex](/../master/images/splaytree15.png?raw=true "splay tree ex")
  
  zig left 
+ ![splay tree ex](/../master/images/splaytree16.png?raw=true "splay tree ex")
  
  find 25 
- 
+ ![splay tree ex](/../master/images/splaytree17.png?raw=true "splay tree ex")
+
  zig-zag left
+ ![splay tree ex](/../master/images/splaytree18.png?raw=true "splay tree ex")
  
  zig right 
+ ![splay tree ex](/../master/images/splaytree19.png?raw=true "splay tree ex")
  
  delete 15 
+ ![splay tree ex](/../master/images/splaytree20.png?raw=true "splay tree ex")
  
  zig right
+ ![splay tree ex](/../master/images/splaytree21.png?raw=true "splay tree ex")
  
  remove root 
+ ![splay tree ex](/../master/images/splaytree22.png?raw=true "splay tree ex")
  
  largest element in left tree to root
- 
+ ![splay tree ex](/../master/images/splaytree23.png?raw=true "splay tree ex")
  
 ```python 
 # splay tree
