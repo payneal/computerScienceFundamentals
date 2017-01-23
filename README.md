@@ -295,24 +295,25 @@ http://www.wiley.com/WileyCDA/WileyTitle/productCd-047012167X.html
 
 ## 5. systems
 * system design:  http://research.google.com/pubs/DistributedSystemsandParallelComputing.html
+like 182 publications read some
+
+great intro to distibuted system design - Google code University
+http://www.hpcs.cs.tsukuba.ac.jp/~tatebe/lecture/h23/dsys/dsd-tutorial.html
+
+great into to parallel computing
+https://computing.llnl.gov/tutorials/parallel_comp/
+
 * google file system: http://research.google.com/archive/gfs.html
+![Google File system](/../master/pdfs/googleFileSystem.pdf?raw=true "google file system")
 
 * google bigtable:  http://research.google.com/archive/bigtable.html
+![Google big table](/../master/pdfs/googleBigTable.pdf?raw=true "google big table")
 
 * Google MapReduce: http://research.google.com/archive/mapreduce.html
+![Google mapreduce](/../master/pdfs/googlemapreduce.pdf?raw=true "google mapreduce")
 
 ## 6. Sorting
 * know how to sort, bubble-sort least important but know it
-
-* Know all the ni\*log(n) sorting algorithm
-
-* know these for sure:quicksort and merge sort
-
-* know why Merge sort can be highly useful in situations 
-
-* know where quicksort is impractical.
-
-python examples:
 
 #### quicksort:
 Quicksort is a very efficient sorting algorithm invented by C.A.R. Hoare. It has two phases:
@@ -484,7 +485,7 @@ Timsort begins by looking for small runs (called miniruns) of data that is alrea
 
 ```python 
 def tim_sort(array): 
-	return sorted(array"
+	return sorted(array)"
 ```
 
 #### heapsort:
@@ -611,6 +612,15 @@ The insertion sort uses the principle of a marker moving along a list with a sor
 
 http://courses.cs.vt.edu/csonline/Algorithms/Lessons/InsertionCardSort/insertioncardsort.html
 https://www.youtube.com/watch?v=Nkw6Jg_Gi4w
+
+
+ex. 
+![Insertion sort](/../master/images/insertionsort1.png?raw=true "Insertion sort ex")
+![Insertion sort](/../master/images/insertionsort2.png?raw=true "Insertion sort ex")
+![Insertion sort](/../master/images/insertionsort3.png?raw=true "Insertion sort ex")
+![Insertion sort](/../master/images/insertionsort4.png?raw=true "Insertion sort ex")
+![Insertion sort](/../master/images/insertionsort5.png?raw=true "Insertion sort ex")
+![Insertion sort](/../master/images/insertionsort6.png?raw=true "Insertion sort ex")
 
 ```python 
 def insertionSort(alist):
@@ -969,7 +979,520 @@ worst-case preformance: O(n log n)
 worst-case space complexity: 0(n)
 operation: Cubesort's algorithm uses a specialized binary search on each axis to find the location to insert an element. When an axis grows too large it is split. Locality of reference is optimal as only 4 binary searches are performed on small arrays for each insertion. By using many small dynamic arrays the high cost for insertion on single large arrays is avoided.
 
-(cant find example)
+```c
+/*
+	Copyright 2014 Gregorius van den Hoven - gregoriusvandenhoven@gmail.com
+*/
+
+/*
+	This program is free software: you can redistribute it and/or modify
+	it under the terms of the GNU General Public License as published by
+	the Free Software Foundation, either version 3 of the License, or
+	(at your option) any later version.
+
+	This program is distributed in the hope that it will be useful,
+	but WITHOUT ANY WARRANTY; without even the implied warranty of
+	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+	GNU General Public License for more details.
+
+	You should have received a copy of the GNU General Public License
+	along with this program.  If not, see <http://www.gnu.org/licenses/>.
+*/
+
+/*
+	Binary Search Tesseract v1.0
+*/
+
+#include <stdlib.h>
+#include <stdio.h>
+#include <string.h>
+#include <sys/time.h>
+
+#define BSC_M 64
+
+#define BSC_X 128
+#define BSC_Y 64
+#define BSC_Z 64
+
+struct cube
+{
+	int *w_floor;
+	struct w_node **w_axis;
+	unsigned char *x_size;
+	unsigned short w_size;
+};
+
+struct w_node
+{
+	int x_floor[BSC_X];
+	struct x_node *x_axis[BSC_X];
+	unsigned char y_size[BSC_X];
+};
+
+struct x_node
+{
+	int y_floor[BSC_Y];
+	struct y_node *y_axis[BSC_Y];
+	unsigned char z_size[BSC_Y];
+};
+
+struct y_node
+{
+	int z_keys[BSC_Z];
+};
+
+void split_w_node(struct cube *cube, short w);
+void split_x_node(struct cube *cube, short w, short x);
+void split_y_node(struct w_node *w_node, short x, short y);
+
+struct cube *create_cube(void)
+{
+	struct cube *cube;
+
+	cube = (struct cube *) calloc(1, sizeof(struct cube));
+
+	return cube;
+}
+
+void destroy_cube(struct cube *cube, int *z_array)
+{
+	if (cube->w_size)
+	{
+		struct w_node *w_node;
+		struct x_node *x_node;
+		struct y_node *y_node;
+
+		register short w, x, y;
+
+		register int z_size = 0;
+
+		for (w = 0 ; w < cube->w_size ; ++w)
+		{
+			w_node = cube->w_axis[w];
+
+			for (x = 0 ; x < cube->x_size[w] ; ++x)
+			{
+				x_node = w_node->x_axis[x];
+			
+				for (y = 0 ; y < w_node->y_size[x] ; ++y)
+				{
+					y_node = x_node->y_axis[y];
+
+					memmove(&z_array[z_size], &y_node->z_keys[0], x_node->z_size[y] * sizeof(int));
+
+					z_size += x_node->z_size[y];
+
+					free(y_node);
+				}
+				free(x_node);
+			}
+			free(w_node);
+		}
+		free(cube->w_floor);
+		free(cube->w_axis);
+		free(cube->x_size);
+	}
+	free(cube);
+}
+
+inline void insert_z_node(struct cube *cube, int key)
+{
+	struct w_node *w_node;
+	struct x_node *x_node;
+	struct y_node *y_node;
+
+	register short mid, w, x, y, z;
+
+	if (cube->w_size == 0)
+	{
+		cube->w_floor = (int *) malloc(BSC_M * sizeof(int));
+		cube->w_axis = (struct w_node **) malloc(BSC_M * sizeof(struct w_node *));
+		cube->x_size = (unsigned char *) malloc(BSC_M * sizeof(unsigned char));
+
+		w_node = cube->w_axis[0] = (struct w_node *) malloc(sizeof(struct w_node));
+
+		x_node = w_node->x_axis[0] = (struct x_node *) malloc(sizeof(struct x_node));
+
+		y_node = x_node->y_axis[0] = (struct y_node *) malloc(sizeof(struct y_node));
+
+		x_node->z_size[0] = 0;
+
+		cube->w_size = cube->x_size[0] = w_node->y_size[0] = 1;
+
+		w = x = y = z = 0;
+		
+		cube->w_floor[0] = w_node->x_floor[0] = x_node->y_floor[0] = key;
+
+		goto insert;
+	}
+
+	if (key < cube->w_floor[0])
+	{
+		w_node = cube->w_axis[0];
+		x_node = w_node->x_axis[0];
+		y_node = x_node->y_axis[0];
+
+		w = x = y = z = 0;
+
+		cube->w_floor[0] = w_node->x_floor[0] = x_node->y_floor[0] = key;
+
+		goto insert;
+	}
+
+	// w
+
+	mid = w = cube->w_size - 1;
+
+	while (mid > 7)
+	{
+		mid /= 2;
+
+		if (key < cube->w_floor[w - mid]) w -= mid;
+	}
+	while (key < cube->w_floor[w]) --w;
+
+	w_node = cube->w_axis[w];
+
+	// x
+
+	mid = x = cube->x_size[w] - 1;
+
+	while (mid > 7)
+	{
+		mid /= 2;
+
+		if (key < w_node->x_floor[x - mid])
+		{
+			x -= mid;
+		}
+	}
+	while (key < w_node->x_floor[x]) --x;
+
+	x_node = w_node->x_axis[x];
+
+	// y
+
+	mid = y = w_node->y_size[x] - 1;
+
+	while (mid > 7)
+	{
+		mid /= 4;
+
+		if (key < x_node->y_floor[y - mid])
+		{
+			y -= mid;
+			if (key < x_node->y_floor[y - mid])
+			{
+				y -= mid;
+				if (key < x_node->y_floor[y - mid])
+				{
+					y -= mid;
+				}
+			}
+		}
+	}
+	while (key < x_node->y_floor[y]) --y;
+
+	y_node = x_node->y_axis[y];
+
+	// z
+
+	mid = z = x_node->z_size[y] - 1;
+
+	while (mid > 7)
+	{
+		mid /= 4;
+
+		if (key < y_node->z_keys[z - mid])
+		{
+			z -= mid;
+			if (key < y_node->z_keys[z - mid])
+			{
+				z -= mid;
+				if (key < y_node->z_keys[z - mid])
+				{
+					z -= mid;
+				}
+			}
+		}
+	}
+	while (key < y_node->z_keys[z]) --z;
+
+
+/*
+//	Uncomment to filter duplicates
+
+	if (key == y_node->z_keys[z])
+	{
+		return;
+	}
+*/
+	++z;
+
+	insert:
+
+	++x_node->z_size[y];
+
+	if (z + 1 != x_node->z_size[y])
+	{
+		memmove(&y_node->z_keys[z + 1], &y_node->z_keys[z], (x_node->z_size[y] - z - 1) * sizeof(int));
+	}
+
+	y_node->z_keys[z] = key;
+
+	if (x_node->z_size[y] == BSC_Z)
+	{
+		split_y_node(w_node, x, y);
+
+		if (w_node->y_size[x] == BSC_Y)
+		{
+			split_x_node(cube, w, x);
+
+			if (cube->x_size[w] == BSC_X)
+			{
+				split_w_node(cube, w);
+			}
+		}
+	}
+}
+
+inline void insert_w_node(struct cube *cube, short w)
+{
+	++cube->w_size;
+
+	if (cube->w_size % BSC_M == 0)
+	{
+		cube->w_floor = (int *) realloc(cube->w_floor, (cube->w_size + BSC_M) * sizeof(int));
+		cube->w_axis = (struct w_node **) realloc(cube->w_axis, (cube->w_size + BSC_M) * sizeof(struct w_node *));
+		cube->x_size = (unsigned char *) realloc(cube->x_size, (cube->w_size + BSC_M) * sizeof(unsigned char));
+	}
+
+	if (w + 1 != cube->w_size)
+	{
+		memmove(&cube->w_floor[w + 1], &cube->w_floor[w], (cube->w_size - w - 1) * sizeof(int));
+		memmove(&cube->w_axis[w + 1], &cube->w_axis[w], (cube->w_size - w - 1) * sizeof(struct w_node *));
+		memmove(&cube->x_size[w + 1], &cube->x_size[w], (cube->w_size - w - 1) * sizeof(unsigned char));
+	}
+
+	cube->w_axis[w] = (struct w_node *) malloc(sizeof(struct w_node));
+}
+
+void split_w_node(struct cube *cube, short w)
+{
+	struct w_node *w_node1, *w_node2;
+
+	insert_w_node(cube, w + 1);
+
+	w_node1 = cube->w_axis[w];
+	w_node2 = cube->w_axis[w + 1];
+
+	cube->x_size[w + 1] = cube->x_size[w] / 2;
+	cube->x_size[w] -= cube->x_size[w + 1];
+
+	memcpy(&w_node2->x_floor[0], &w_node1->x_floor[cube->x_size[w]], cube->x_size[w + 1] * sizeof(int));
+	memcpy(&w_node2->x_axis[0], &w_node1->x_axis[cube->x_size[w]], cube->x_size[w + 1] * sizeof(struct x_node *));
+	memcpy(&w_node2->y_size[0], &w_node1->y_size[cube->x_size[w]], cube->x_size[w + 1] * sizeof(unsigned char));
+
+	cube->w_floor[w + 1] = w_node2->x_floor[0];
+}
+
+inline void insert_x_node(struct cube *cube, short w, short x)
+{
+	struct w_node *w_node = cube->w_axis[w];
+
+	short x_size = ++cube->x_size[w];
+
+	if (x_size != x + 1)
+	{
+		memmove(&w_node->x_floor[x + 1], &w_node->x_floor[x], (x_size - x - 1) * sizeof(int));
+		memmove(&w_node->x_axis[x + 1], &w_node->x_axis[x], (x_size - x - 1) * sizeof(struct x_node *));
+		memmove(&w_node->y_size[x + 1], &w_node->y_size[x], (x_size - x - 1) * sizeof(unsigned char));
+	}
+
+	w_node->x_axis[x] = (struct x_node *) malloc(sizeof(struct x_node));
+}
+
+void split_x_node(struct cube *cube, short w, short x)
+{
+	struct w_node *w_node = cube->w_axis[w];
+	struct x_node *x_node1, *x_node2;
+
+	insert_x_node(cube, w, x + 1);
+
+	x_node1 = w_node->x_axis[x];
+	x_node2 = w_node->x_axis[x + 1];
+
+	w_node->y_size[x + 1] = w_node->y_size[x] / 2;
+	w_node->y_size[x] -= w_node->y_size[x + 1];
+
+	memcpy(&x_node2->y_floor[0], &x_node1->y_floor[w_node->y_size[x]], w_node->y_size[x + 1] * sizeof(int));
+	memcpy(&x_node2->y_axis[0], &x_node1->y_axis[w_node->y_size[x]], w_node->y_size[x + 1] * sizeof(struct y_node *));
+	memcpy(&x_node2->z_size[0], &x_node1->z_size[w_node->y_size[x]], w_node->y_size[x + 1] * sizeof(unsigned char));
+
+	w_node->x_floor[x + 1] = x_node2->y_floor[0];
+}
+
+inline void insert_y_node(struct w_node *w_node, short x, short y)
+{
+	struct x_node *x_node = w_node->x_axis[x];
+
+	short y_size = ++w_node->y_size[x];
+
+	if (y_size != y + 1)
+	{
+		memmove(&x_node->y_floor[y + 1], &x_node->y_floor[y], (y_size - y - 1) * sizeof(int));
+		memmove(&x_node->y_axis[y + 1], &x_node->y_axis[y], (y_size - y - 1) * sizeof(struct y_node *));
+		memmove(&x_node->z_size[y + 1], &x_node->z_size[y], (y_size - y - 1) * sizeof(unsigned char));
+	}
+
+	x_node->y_axis[y] = (struct y_node *) malloc(sizeof(struct y_node));
+}
+
+void split_y_node(struct w_node *w_node, short x, short y)
+{
+	struct x_node *x_node = w_node->x_axis[x];
+	struct y_node *y_node1, *y_node2;
+
+	insert_y_node(w_node, x, y + 1);
+
+	y_node1 = x_node->y_axis[y];
+	y_node2 = x_node->y_axis[y + 1];
+
+	x_node->z_size[y + 1] = x_node->z_size[y] / 2;
+	x_node->z_size[y] -= x_node->z_size[y + 1];
+
+	memcpy(&y_node2->z_keys[0], &y_node1->z_keys[x_node->z_size[y]], x_node->z_size[y + 1] * sizeof(int));
+
+	x_node->y_floor[y + 1] = y_node2->z_keys[0];
+}
+
+long long utime()
+{
+	struct timeval now_time;
+
+	gettimeofday(&now_time, NULL);
+
+	return now_time.tv_sec * 1000000LL + now_time.tv_usec;
+}
+
+void cubesort(int *array, int size)
+{
+	struct cube *cube;
+	int cnt;
+
+	if (size > 1000000)
+	{
+		for (cnt = 100000 ; cnt + 100000 < size ; cnt += 100000)
+		{
+			cubesort(&array[cnt], 100000);
+		}
+
+		cubesort(&array[cnt], size - cnt);
+	}
+
+	cube = create_cube();
+
+	for (cnt = 0 ; cnt < size ; cnt++)
+	{
+		insert_z_node(cube, array[cnt]);
+	}
+	destroy_cube(cube, array);
+}
+
+int main(int argc, char **argv)
+{
+	static int max = 10000000;
+	int cnt;
+	long long start, end;
+	int *z_array;
+
+	if (argv[1] && *argv[1])
+	{
+		printf("%s\n", argv[1]);
+	}
+
+	z_array = malloc(max * sizeof(int));
+
+	for (cnt = 0 ; cnt < max ; cnt++)
+	{
+		z_array[cnt] = rand();
+	}
+
+	start = utime();
+
+	cubesort(z_array, max);
+
+	end = utime();
+
+	printf("Cubesort: sorted %d elements in %f seconds. (random order)\n", max, (end - start) / 1000000.0);
+
+	for (cnt = 0 ; cnt < max ; cnt++)
+	{
+		z_array[cnt] = cnt;
+	}
+
+	start = utime();
+
+	cubesort(z_array, max);
+
+	end = utime();
+
+	printf("Cubesort: sorted %d elements in %f seconds. (forward order)\n", max, (end - start) / 1000000.0);
+
+	for (cnt = 0 ; cnt < max ; cnt++)
+	{
+		z_array[cnt] = max - cnt;
+	}
+
+	start = utime();
+
+	cubesort(z_array, max);
+
+	end = utime();
+
+	printf("Cubesort: sorted %d elements in %f seconds. (reverse order)\n", max, (end - start) / 1000000.0);
+
+	for (cnt = 1 ; cnt < max ; cnt++)
+	{
+		if (z_array[cnt - 1] > z_array[cnt])
+		{
+			printf("Cubesort: not properly sorted at index %d. (%d vs %d\n", cnt, z_array[cnt - 1], z_array[cnt]);
+			return 0;
+		}
+	}
+
+	return 0;
+}
+```
+
+* Know all the (n log(n)) sorting algorithm
+worst case = merge sort, timsort, heapsort, cubesort 
+average = quick sort , merge sort, timsort, heapsort, tree sort, cube sort
+best = quicksort, merge sort, heap sort, tree sort, shell sort
+
+* know these for sure:quicksort and merge sort
+see above (reminder) 
+quicksort = Quick sort is a highly efficient sorting algorithm and is based on partitioning of array of data into smaller arrays. A large array is partitioned into two arrays one of which holds values smaller than the specified value, say pivot, based on which the partition is made and another array holds values greater than the pivot value.
+
+Quick sort partitions an array and then calls itself recursively twice to sort the two resulting subarrays. This algorithm is quite efficient for large-sized data sets as its average and worst case complexity are of Ο(nlogn), where n is the number of items.
+ 
+mergersort = Merge sort is a sorting technique based on divide and conquer technique. With worst-case time complexity being Ο(n log n), it is one of the most respected algorithms.
+
+Merge sort first divides the array into equal halves and then combines them in a sorted manner.
+
+* know why Merge sort can be highly useful in situations where quicksort is impractical.
+Take mergesort over quicksort if you don't know anything about the data. Merge Sort Worst case complexity is O(nlogn) whereas Quick Sort worst case is O(n^2). Merge Sort is a stable sort which means that the same element in an array maintain their original positions with respect to each other
+
+Quicksort depends on being able to index into an array or similar structure. When that's possible, it's hard to beat Quicksort.
+
+But you can't index directly into a linked list very quickly. That is, if myList is a linked list, then myList[x], were it possible to write such syntax, would involve starting at the head of the list and following the first x links. That would have to be done twice for every comparison that Quicksort makes, and that would get expensive real quick.
+
+Same thing on disk: Quicksort would have to seek and read every item it wants to compare.
+
+Merge sort is faster in these situations because it reads the items sequentially, typically making log2(N) passes over the data. There is much less I/O involved, and much less time spent following links in a linked list.
+
+Quicksort is fast when the data fits into memory and can be addressed directly. Mergesort is faster when data won't fit into memory or when it's expensive to get to an item.
+
 
 ## 7. hashtables (must know or will fail)
 * Be able to implement one using only arrays in your favorite language, in about the space of one interview.
@@ -3066,6 +3589,8 @@ Output would be:
 
 ## 9. Graphs
 * 3 basic ways to represent a graph in memory (objects and pointers, matrix, and adjacency list); familiarize yourself with each representation and its pros & cons
+
+
 * You should know the basic graph traversal algorithms: breadth-first search and depth-first search
 * Know their computational complexity, their tradeoffs, and how to implement them in real code
 * study up on fancier algorithms, such as Dijkstra and A\*.
@@ -3131,4 +3656,201 @@ http://static.googleusercontent.com/media/research.google.com/en/us/pubs/archive
 * 2 - Daily practice questions https://leetcode.com/ 
 * 3 - Pramp helps with mock interviews   https://www.pramp.com 
 * 4 - clear code: A handbook of agile software craftsmanship http://ricardogeek.com/docs/clean_code.pdf
+
+## sample question 
+
+### system design
+examples: 
+question - 
+You have 10^9 user, 10^3 websites that users are subscribed to and 2000 servers. Some users will unsubscribe from certain websites. How would you architect this system to be scalable and performant?
+
+answers I liked  (not mine) - 
+What you probably got to do is create a data structure which will capture the user input (unsubs / subs), and subsequently apply to the existing user data in certain scalable fashion which varies on what basis the data is being used.
+
+We need to have a lookup table where they key is userId and value is a list of the websites that user is subscribed to. Let's assume we assign each user a 32-bit(4 byte) int user iD. Let's also assign 4 byte int iDs to the websites. If in the worst case a user is subscribed to all websites, a single key-value pair will take up 16Kb of space we have a total of 16Kb * 10^9 users = 1.6 * 10^12 bytes of data (1.6TB). Assume that a single server can store 8GB of data then 1.6 * 10^12 / 8 * 10^9 = 2 * 10^3 servers ( which is what we have). This allows us to store data on 500K users per server. Each server can store a range of User IDs (ex. server 1 stores IDs from 1...499 999). When a user unsubscribes based on his userId we can navigate to the correct server containing the corresponding look-up table. In the look up table delete the ID of the website he wishes to unsubscribe from.
+
+question - how do you design a systemn fir very large graphs(does not fit in a single machine)
+answers I liked - 
+Adj list, but in following way:
+Distributed hash map.
+A key is either a node or pair of nodes.
+If it is a node, a value is a pair that consists of key node and the first node in adjacency list.
+If it is a pair. The key consists of node for who the adjacency list and the current node in adj list. A value consists of node for who the adjacency list and the next node in adj list.
+
+question - how would you store the relations in a social network like Facebook and implemet a featire where one user recieves notifications whern their friends like the same thing as they do
+
+answers: 
+You would store the relations in a Graph Database (like Facebook actually does) and attach a trigger to the liking of a page to send a notification to all their friends who also liked that page (really easy to do in a graph database)
+
+
+question:  Design Youtubeview-counting feature
+answer: 
+Always simplify things and start building up.
+
+Assume that we have a small set of videos that we need to track the counts. Also assume that we are not handling any spam. A basic approach is using relational databases (video_id, count) that is being incremented whenever a user clicks on. 
+
+What is the problem with this approach? The database operation is very expensive for each click. A possible solution we can have Memcache or Redis layer above the DB that counts the number of clicks for each video. And having a background job that reads the cached counts and reflects that in the DB. Pros: much faster, Cons: more complex, can lose data in case of server failure and cached values have not populated in the DB yet and the values in the DB are not the most recent values.
+
+Another side of improvement is bandwidth wise. Assuem that it is not necessary that the number of hits to be really accurate. We can convert the connection request for increment to be based on UDP rather than TCP.
+
+Again discuss with the interview the pros and cons and let him lead which direction should the discussion goes.
+
+
+question: how would you optimize an elevator system for a building with 50 flors and 4 elevators? Optimize in terms of lowest wait times fo rthe users. Nothing related to power consumption.
+
+answer: One idea is to minimize the time an elevator is spent moving while empty. Assuming an even distribution of people throughout the building and where they want to go, this might be satisfied by spreading out all elevators evenly among floors. ie. make it so elevators always come to rest at floors 1, 17, 33, 50.
+
+We can also think of "a person pressing an up/down button" as a request. Every time an elevator has dropped off its last person and there are no outstanding requests, move it to the closest floor interval mentioned above that isn't already occupied by another elevator. If there are outstanding requests, address them in a way that maximizes the number of requests handled in a given direction that aren't already "on the way" for another elevator. There is probably some formal definition for this behaviour, but this is the general idea.
+
+We can model the requests as 2 queues, where one is for requests going up, another for going down, and elevators having pointers that move along the queues, removing requests, and adding requests to themselves for processing.
+
+For real world scenarios, we can apply heuristics such as people tend to go from the first floor up to other floors in the morning, and opposite in the evening. This would mean the morning would have elevator resting positions shifted towards the bottom half of the building Vs the opposite in the evening. During the day when movement is more evenly distributed, the elevators can also be evenly distributed.
+
+
+comments- 
+queue will be overkill and we don't want strict FIFO. Imagine an elevator is requested from 1 floor to 20 and in between 10 floor requests it. Each elevator maintains an array (as a bitmap)
+
+generally the right idea. and I agree with , no queue. More importantly getting to know the current system is key before beginning to optimize it. For example, what does wait time actually mean? does it simply mean, calling for an elevator and getting into it? Coz, remember this is a really tall building and someone wanting to go to the higher floors from the ground floor might be experiencing a lot to transit time while the elevator picks and drops people on the way up. Your solution although generally good is not clearly addressing this.
+
+
+question - what happens dirring and after a query is being typed(autocomplete) in a search box weather the user is trying to go to a website of asking questions etc. and how do servers complete the request and what is the best (parallel) structure for the request to go through. 
+
+answesrs - 
+Lets take example of Google page - auto suggestion. This is what I believe should be happening. 
+1. When user enters into search box, the view module (ex jsp) makes a call the google webapp servlet with user inputs as parameter string using ofcourse AJAX. 
+2. Based on the inputs / paramter string the server looks up the possible suggestion by looking up the data structure that stores all the previous searched strings. Data structure here would best be Trie. search is a DFS 
+3. after completing all strings search, the servlet sends back the collection to view module. 
+4. view on reciept of response, sets the respective DOM object to display the suggestion. 
+
+Autocomplete can be achieved many different ways. Most common is Ajax on the client side, and an NLP search engine application like Apache Lucene or Solr that does a reverse lookup and returns the matches based on the typed characters. These search engines can be very finely tuned. The rest of the question is not clear.
+
+
+question - The setup is that we are given a series of text files which contain information regarding a code repository's commits. Each file represents a single commit and they are formatted as follows: 
+" 
+Commit #: XXX 
+Author: XXX 
+Reviewer(s): XXX, XXX, ... 
+File: XXX 
+File: XXX 
+... 
+Date: XX:XX:XX XX/XX/XXXX 
+" 
+The commit number is unique and is generated in synchronous order. There is exactly 1 unique author. There are a variable number of reviewers, delimited by commas; if there are no reviewers, that line is absent from the file. There are a variable number of edited files in the commit, each receiving its own line. The time/date is when the commit was submitted. 
+
+First design a graphical model for all of the commit data. Then describe how this model is updated when a new commit is generated. Finally, write the code segment called when a new commit is generated which edits a system that has implemented your model of the data - its input is a file name and whatever necessary data structures that are maintained by your system.
+
+answer - 
+1) Keep a list of managed files (say, L) and their status. 
+2) Each file has a connection to all related commits. (commits are ranked based on time) 
+3) Each commit has a connection to all related file (including not-changed files). 
+
+For the latest version, scan the files and fetch the latest files. 
+For one particular commit, scan the related files and fetch the files. 
+
+Each time, when a new commit happens, 
+1) If the commit new a file, insert the file to L. 
+2) For all modified files, insert the commit into the beginning. 
+3) Insert the commit to the ranked commit list.
+
+question: 
+design a system to return an unique ID for each request. For most of requests, the ID value should increase as time goes, the system should handle 1000 requests per second at least. 
+timestamps alone is not valid since there might be multiple requests with same timestamps.
+
+answer - 
+Requirements: 
+
+-> Unique Incrementing Id 
+-> Scalable 
+-> Available 
+-> Consistent 
+
+Solution: 
+
+First of all lets determine a solution that allows you to get the best unique id that starts incrementing from 0. We can use the time stamp and convert to epoch to get a unique id. 
+When we start this system we set a variable called START_EPOCH_TIME. 
+
+During each request we calculate CURRENT_EPOCH_TIME - START_EPOCH_TIME. 
+
+This should allow of us to get unique incrementing ids over the scale of the number of digits we use. 
+
+However, this won't work when there are multiple requests within the same time stamp. So first thing is we modify the length of our id by the number of requests we want per second. i.e. ID000 for 1000. So what we do is maintain a hash table that we recycle on regular intervals that maps epoch time and count of the number of requests. We update the table on every hit of the request. 
+
+REQ_COUNT [CURRENT_EPOCH_TIME] += 1 
+
+Our unique ID is then ID + str(REQ_COUNT [CURRENT_EPOCH_TIME]) . 
+
+If this is the only machine that handles requests then this shall work, however, this may not scale well when there are multiple machines handling requests. So lets say we have 10 machines handling requests. Then we use gossiping protocol to ensure that all the machines know about each other. This way we ensure that each machine knows exactly the number of machines that exist. Using this knowledge each machine assigns itself a range ordered by the machines IP/NAME. So for 10 machines. Machine 1 gets 0-100, 2 gets 100-200, 3 gets 200-300. 
+
+Then the hash table will be initialized with: 
+REQ_COUNT [CURRENT_EPOCH_TIME] = RANGE_START 
+
+And incremented as such. 
+REQ_COUNT [CURRENT_EPOCH_TIME] += 1. 
+
+Finally we always check whether REQ_COUNT [CURRENT_EPOCH_TIME] > RANGE. If so then we throttle the request. Otherwise if we want to handle more we need to update the way the system works. This should be decided based on the requirements and capacity of the system in handling these requests.
+
+question:
+Given a large network of computers, each keeping log files of visited urls, find the top ten of the most visited urls. 
+(i.e. have many large <string (url) -> int (visits)> maps, calculate implicitly <string (url) -> int (sum of visits among all distributed maps), and get the top ten in the combined map) 
+
+The result list must be exact, and the maps are too large to transmit over the network (especially sending all of them to a central server or using MapReduce directly, is not allowed)
+
+answer: 
+Presuming a protocol exists that can ask three questions to each server: 
+
+* the score of a single url 
+* the top 10 
+* the top n that satisfy score >= N 
+
+We program a two pass solution like so: 
+
+We denote the number of servers as S. 
+
+[First pass] 
+(1) Ask every server for its own top ten 
+
+(2) merge the results. For all URLs in the merged set calculate correct values by asking 
+all servers for their scores for each URL. Calculate a set of top ten from our sample. 
+
+(3) pick score of the now tenth URL as the threshold that we try to beat 
+in the second round. We denote the threshold as T. 
+
+[Second pass] 
+(4) Ask every server for all its top N that satisfy score >= T/S 
+
+(5) Merge these bigger samples again as in step (2) 
+
+(6) We now have the correct top ten with correct scores.
+
+question:
+How do you make sure an API does not leak memory?
+
+answer: 
+1> Design API such that it only Process the functionality and no memory allocation within it. 
+2> Use the Smart pointer concept for every pointer usage within the API. 
+3> Can make API's so that for every allocation there must be the deallocation called in. for every condition.
+
+question: 
+how you will design system for server and which will have many clients, all clients will keep of adding some words to system and server has to detect which words to accept, at the same time server will also keep on adding words.So which data structure you will use so that system will be efficient and fast.
+
+answer: 
+it can be considered as same client-server problem. 
+where the same server is accessed by many clients at the same time. 
+
+for this we can adopt the terminology to complete each client request on separate thread. and all the preprossing before adding that words (to check the validity,if the word is already present or not etc ) should be on this thread, and this thread respond to client asynchronously whether word is saved or not. 
+
+ofcourse we should use proper locking method when accessing the common datastrucures from various threads. 
+
+as far as datastructure is concerned for we can use hastables & tries. 
+depending upon the requirement. 
+
+hashtables has very fast has constant time access but require the very good hash function in advance. which can be difficult to estimate in advance. 
+
+but tries has lgn access in all the cases.
+
+question: 
+	How do you design cache server for a simple web application. How do you make sure of the data consistancy. How do update your data/cache.
+
+answer: 
+You can design a cache server using a dynamic data structure like a double linked list. while you must be able to read the cache concurrently, only one thread or process must be able to write to it a time. this could be achieved by procuring specific read and write locks in the POSIX thread API.For cache eviction policy, LRU is a good choice and it can be implemented using counters.
 
