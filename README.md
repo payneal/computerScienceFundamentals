@@ -3590,8 +3590,135 @@ Output would be:
 ## 9. Graphs
 * 3 basic ways to represent a graph in memory (objects and pointers, matrix, and adjacency list); familiarize yourself with each representation and its pros & cons
 
+look at three criteria. One is how much memory, or space, we need in each representation. We'll use asymptotic notation for that. Yes, we can use asymptotic notation for purposes other than expressing running times! It's really a way to characterize functions, and a function can describe a running time, an amount of space required, or some other resource. The other two criteria we'll use relate to time. One is how long it takes to determine whether a given edge is in the graph. The other is how long it takes to find the neighbors of a given vertex.
+
+![Social Networking](/../master/images/socialnetworkgraph.png?raw=true "Social Networking Graph")
+
+### Edge List
+One simple way to represent a graph is just a list, or array, of |E| ∣E∣vertical bar, E, vertical bar edges, which we call an edge list. To represent an edge, we just have an array of two vertex numbers, or an array of objects containing the vertex numbers of the vertices that the edges are incident on. If edges have weights, add either a third element to the array or more information to the object, giving the edge's weight. Since each edge contains just two or three numbers, the total space for an edge list is \Theta(E) Θ(E). For example, here's how we represent an edge list in JavaScript for the social network graph:
+
+```javascript 
+[ [0,1], [0,6], [0,8], [1,4], [1,6], [1,9], [2,4], [2,6], [3,4], [3,5],
+[3,8], [4,5], [4,9], [7,8], [7,9] ]
+```
+Edge lists are simple, but if we want to find whether the graph contains a particular edge, we have to search through the edge list. If the edges appear in the edge list in no particular order, that's a linear search through |E| ∣E∣vertical bar, E, vertical bar edges. Question to think about: How can you organize an edge list to make searching for a particular edge take O(\lg E) O(lgE) time? The answer is a little tricky.
+
+### Adjacency matrices
+For a graph with |V| ∣V∣vertical bar, V, vertical bar vertices, an adjacency matrix is a |V| \times |V| ∣V∣×∣V∣vertical bar, V, vertical bar, times, vertical bar, V, vertical bar matrix of 0s and 1s, where the entry in row i ii and column j jj is 1 if and only if the edge (i,j) (i,j)left parenthesis, i, comma, j, right parenthesis is in the graph. If you want to indicate an edge weight, put it in the row i ii, column j jj entry, and reserve a special value (perhaps null) to indicate an absent edge. Here's the adjacency matrix for the social network graph:
+
+![Adjaceny Matrices](/../master/images/adjacencyMatrices.png?raw=true "Adjaceny Matrices")
+
+```javascript 
+[ [0, 1, 0, 0, 0, 0, 1, 0, 1, 0],
+  [1, 0, 0, 0, 1, 0, 1, 0, 0, 1],
+  [0, 0, 0, 0, 1, 0, 1, 0, 0, 0],
+  [0, 0, 0, 0, 1, 1, 0, 0, 1, 0],
+  [0, 1, 1, 1, 0, 1, 0, 0, 0, 1],
+  [0, 0, 0, 1, 1, 0, 0, 0, 0, 0],
+  [1, 1, 1, 0, 0, 0, 0, 0, 0, 0],
+  [0, 0, 0, 0, 0, 0, 0, 0, 1, 1],
+  [1, 0, 0, 1, 0, 0, 0, 1, 0, 0],
+  [0, 1, 0, 0, 1, 0, 0, 1, 0, 0] ]
+```
+With an adjacency matrix, we can find out whether an edge is present in constant time, by just looking up the corresponding entry in the matrix. For example, if the adjacency matrix is named graph, then we can query whether edge (i,j) (i,j)left parenthesis, i, comma, j, right parenthesis is in the graph by looking at graph[i][j]. So what's the disadvantage of an adjacency matrix? Two things, actually. First, it takes \Theta(V^2) Θ(V
+​2
+​​ ) space, even if the graph is sparse: relatively few edges. In other words, for a sparse graph, the adjacency matrix is mostly 0s, and we use lots of space to represent only a few edges. Second, if you want to find out which vertices are adjacent to a given vertex i ii, you have to look at all |V| ∣V∣vertical bar, V, vertical bar entries in row i ii, even if only a small number of vertices are adjacent to vertex i ii.
+For an undirected graph, the adjacency matrix is symmetric: the row i ii, column j jj entry is 1 if and only if the row j jj, column i ii entry is 1. For a directed graph, the adjacency matrix need not be symmetric
+
+### Adjacency List
+Representing a graph with adjacency lists combines adjacency matrices with edge lists. For each vertex i ii, store an array of the vertices adjacent to it. We typically have an array of |V| ∣V∣vertical bar, V, vertical bar adjacency lists, one adjacency list per vertex. Here's an adjacency-list representation of the social network graph:
+
+![Adjaceny List](/../master/images/adjacencyList.png?raw=true "Adjaceny List")
+
+```javascript
+[ [1, 6, 8],
+  [0, 4, 6, 9],
+  [4, 6],
+  [4, 5, 8],
+  [1, 2, 3, 5, 9],
+  [3, 4],
+  [0, 1, 2],
+  [8, 9],
+  [0, 3, 7],
+  [1, 4, 7] ]
+```
+
+Vertex numbers in an adjacency list are not required to appear in any particular order, though it is often convenient to list them in increasing order, as in this example.
+We can get to each vertex's adjacency list in constant time, because we just have to index into an array. To find out whether an edge (i,j) (i,j)left parenthesis, i, comma, j, right parenthesis is present in the graph, we go to i ii's adjacency list in constant time and then look for j jj in i ii's adjacency list. How long does that take in the worst case? The answer is \Theta(d) Θ(d), where d dd is the degree of vertex i ii, because that's how long i ii's adjacency list is. The degree of vertex i ii could be as high as |V|-1 ∣V∣−1vertical bar, V, vertical bar, minus, 1 (if i ii is adjacent to all the other |V|-1 ∣V∣−1vertical bar, V, vertical bar, minus, 1 vertices) or as low as 0 (if i ii is isolated, with no incident edges). In an undirected graph, vertex j jj is in vertex i ii's adjacency list if and only if i ii is in j jj's adjacency list. If the graph is weighted, then each item in each adjacency list is either a two-item array or an object, giving the vertex number and the edge weight.
+You can use a for-loop to iterate through the vertices in an adjacency list. For example, suppose that you have an adjacency-list representation of a graph in the variable graph, so that graph[i] is an array containing the neighbors of vertex i ii. Then, to call a function doStuff on each vertex adjacent to vertex i ii, you could use the following JavaScript code:
+
+```javascript
+for (var j = 0; j < graph[i].length; j++) {
+    doStuff(graph[i][j]);
+}
+```
+If the double-subscript notation confuses you, you can think of it this way:
+
+```javascript
+var vertex = graph[i];
+for (var j = 0; j < vertex.length; j++) {
+    doStuff(vertex[j]);
+}
+```
+
+How much space do adjacency lists take? We have |V| ∣V∣vertical bar, V, vertical bar lists, and although each list could have as many as |V|-1 ∣V∣−1vertical bar, V, vertical bar, minus, 1 vertices, in total the adjacency lists for an undirected graph contain 2|E| 2∣E∣2, vertical bar, E, vertical bar elements. Why 2|E| 2∣E∣2, vertical bar, E, vertical bar? Each edge (i,j) (i,j)left parenthesis, i, comma, j, right parenthesis appears exactly twice in the adjacency lists, once in i ii's list and once in j jj's list, and there are |E| ∣E∣vertical bar, E, vertical bar edges. For a directed graph, the adjacency lists contain a total of |E| ∣E∣vertical bar, E, vertical bar elements, one element per directed edge.
 
 * You should know the basic graph traversal algorithms: breadth-first search and depth-first search
+### breadth-first search
+Breadth first search (BFS) is one of the easiest algorithms for searching a graph. It also serves as a prototype for several other important graph algorithms
+Given a graph GG and a starting vertex ss, a breadth first search proceeds by exploring edges in the graph to find all the vertices in GG for which there is a path from ss. The remarkable thing about a breadth first search is that it finds all the vertices that are a distance kk from ss before it finds any vertices that are a distance k+1k+1. One good way to visualize what the breadth first search algorithm does is to imagine that it is building a tree, one level of the tree at a time. A breadth first search adds all children of the starting vertex before it begins to discover any of the grandchildren.
+
+To keep track of its progress, BFS colors each of the vertices white, gray, or black. All the vertices are initialized to white when they are constructed. A white vertex is an undiscovered vertex. When a vertex is initially discovered it is colored gray, and when BFS has completely explored a vertex it is colored black. This means that once a vertex is colored black, it has no white vertices adjacent to it. A gray node, on the other hand, may have some white vertices adjacent to it, indicating that there are still additional vertices to explore.
+
+```python
+# python  breadth first search algorithm
+# adjacency list with a Queue 
+
+from pythonds.graphs import Graph, Vertex
+from pythonds.basic import Queue
+
+def bfs(g,start):
+  start.setDistance(0)
+  start.setPred(None)
+  vertQueue = Queue()
+  vertQueue.enqueue(start)
+  while (vertQueue.size() > 0):
+    currentVert = vertQueue.dequeue()
+    for nbr in currentVert.getConnections():
+      if (nbr.getColor() == 'white'):
+        nbr.setColor('gray')
+        nbr.setDistance(currentVert.getDistance() + 1)
+        nbr.setPred(currentVert)
+        vertQueue.enqueue(nbr)
+    currentVert.setColor('black')
+```
+BFS begins at the starting vertex s and colors start gray to show that it is currently being explored. Two other values, the distance and the predecessor, are initialized to 0 and None respectively for the starting vertex. Finally, start is placed on a Queue. The next step is to begin to systematically explore vertices at the front of the queue. We explore each new node at the front of the queue by iterating over its adjacency list. As each node on the adjacency list is examined its color is checked. If it is white, the vertex is unexplored, and four things happen:
+
+1. The new, unexplored vertex nbr, is colored gray.
+2. The predecessor of nbr is set to the current node currentVert
+3. The distance to nbr is set to the distance to currentVert + 1
+4. nbr is added to the end of a queue. Adding nbr to the end of the queue effectively schedules this node for further exploration, but not until all the other vertices on the adjacency list of currentVert have been explored.
+
+
+the Graph
+![The Graph](/../master/images/theGraph.png?raw=true "The Graph")
+
+ Starting from fool we take all nodes that are adjacent to fool and add them to the tree. The adjacent nodes include pool, foil, foul, and cool. Each of these nodes are added to the queue of new nodes to expand.
+ 
+ ![BFS](/../master/images/bfs1.png?raw=true "BFS")
+ 
+ In the next step bfs removes the next node (pool) from the front of the queue and repeats the process for all of its adjacent nodes. However, when bfs examines the node cool, it finds that the color of cool has already been changed to gray. This indicates that there is a shorter path to cool and that cool is already on the queue for further expansion. The only new node added to the queue while examining pool is poll. 
+ 
+ ![BFS](/../master/images/bfs2.png?raw=true "BFS")
+ 
+The next vertex on the queue is foil. The only new node that foil can add to the tree is fail. As bfs continues to process the queue, neither of the next two nodes add anything new to the queue or the tree.
+
+![BFS](/../master/images/bfs3.png?raw=true "BFS")
+
+![BFS](/../master/images/bfs4.png?raw=true "BFS")
+
+### depth-first search
+
 * Know their computational complexity, their tradeoffs, and how to implement them in real code
 * study up on fancier algorithms, such as Dijkstra and A\*.
 
