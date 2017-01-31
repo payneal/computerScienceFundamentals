@@ -3800,6 +3800,27 @@ see code above
 
 * study up on fancier algorithms, such as Dijkstra and A\*.
 
+#### Dijkstra
+is an algorithm for finding the shortest paths between nodes in a graph, which may represent, for example, road networks. 
+
+Dijkstra's algorithm to find the shortest path between a and b. It picks the unvisited vertex with the lowest distance, calculates the distance through it to each unvisited neighbor, and updates the neighbor's distance if smaller. Mark visited (set to red) when done with neighbors.
+Class			Search algorithm
+Data structure		Graph
+Worst-case performance	O(|E|+|V|\log |V|)
+
+![Dijkstra](/../master/images/dijkstra1.png?raw=true "Dijkstra ex")
+![Dijkstra](/../master/images/dijkstra2.png?raw=true "Dijkstra ex")
+![Dijkstra](/../master/images/dijkstra3.png?raw=true "Dijkstra ex")
+![Dijkstra](/../master/images/dijkstra4.png?raw=true "Dijkstra ex")
+![Dijkstra](/../master/images/dijkstra5.png?raw=true "Dijkstra ex")
+![Dijkstra](/../master/images/dijkstra6.png?raw=true "Dijkstra ex")
+![Dijkstra](/../master/images/dijkstra7.png?raw=true "Dijkstra ex")
+![Dijkstra](/../master/images/dijkstra8.png?raw=true "Dijkstra ex")
+![Dijkstra](/../master/images/dijkstra9.png?raw=true "Dijkstra ex")
+![Dijkstra](/../master/images/dijkstra10.png?raw=true "Dijkstra ex")
+![Dijkstra](/../master/images/dijkstra11.png?raw=true "Dijkstra ex")
+
+#### A\*
 
 
 ## 10. Other data structures
