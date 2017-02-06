@@ -3820,7 +3820,125 @@ Worst-case performance	O(|E|+|V|\log |V|)
 ![Dijkstra](/../master/images/dijkstra10.png?raw=true "Dijkstra ex")
 ![Dijkstra](/../master/images/dijkstra11.png?raw=true "Dijkstra ex")
 
+```python
+class Graph:
+  def __init__(self):
+    self.nodes = set()
+    self.edges = defaultdict(list)
+    self.distances = {}
+
+  def add_node(self, value):
+    self.nodes.add(value)
+
+  def add_edge(self, from_node, to_node, distance):
+    self.edges[from_node].append(to_node)
+    self.edges[to_node].append(from_node)
+    self.distances[(from_node, to_node)] = distance
+
+
+def dijsktra(graph, initial):
+  visited = {initial: 0}
+  path = {}
+
+  nodes = set(graph.nodes)
+
+  while nodes: 
+    min_node = None
+    for node in nodes:
+      if node in visited:
+        if min_node is None:
+          min_node = node
+        elif visited[node] < visited[min_node]:
+          min_node = node
+
+    if min_node is None:
+      break
+
+    nodes.remove(min_node)
+    current_weight = visited[min_node]
+
+    for edge in graph.edges[min_node]:
+      weight = current_weight + graph.distance[(min_node, edge)]
+      if edge not in visited or weight < visited[edge]:
+        visited[edge] = weight
+        path[edge] = min_node
+
+  return visited, path
+```
 #### A\*
+ video = https://www.youtube.com/watch?v=eTx6HQ9Veas
+
+ is a computer algorithm that is widely used in pathfinding and graph traversal, the process of plotting an efficiently directed path between multiple points, called nodes. It enjoys widespread use due to its performance and accuracy. However, in practical travel-routing systems, it is generally outperformed by algorithms which can pre-process the graph to attain better performance,[1] although other work has found A* to be superior to other approaches
+ 
+ A* is an informed search algorithm, or a best-first search, meaning that it solves problems by searching among all possible paths to the solution (goal) for the one that incurs the smallest cost (least distance travelled, shortest time, etc.), and among these paths it first considers the ones that appear to lead most quickly to the solution. It is formulated in terms of weighted graphs: starting from a specific node of a graph, it constructs a tree of paths starting from that node, expanding paths one step at a time, until one of its paths ends at the predetermined goal node.
+
+At each iteration of its main loop, A* needs to determine which of its partial paths to expand into one or more longer paths. It does so based on an estimate of the cost (total weight) still to go to the goal node. Specifically, A* selects the path that minimizes
+
+{\displaystyle f(n)=g(n)+h(n)} f(n)=g(n)+h(n)
+where n is the last node on the path, g(n) is the cost of the path from the start node to n, and h(n) is a heuristic that estimates the cost of the cheapest path from n to the goal. The heuristic is problem-specific. For the algorithm to find the actual shortest path, the heuristic function must be admissible, meaning that it never overestimates the actual cost to get to the nearest goal node.
+
+Typical implementations of A* use a priority queue to perform the repeated selection of minimum (estimated) cost nodes to expand. This priority queue is known as the open set or fringe. At each step of the algorithm, the node with the lowest f(x) value is removed from the queue, the f and g values of its neighbors are updated accordingly, and these neighbors are added to the queue. The algorithm continues until a goal node has a lower f value than any node in the queue (or until the queue is empty).[a] The f value of the goal is then the length of the shortest path, since h at the goal is zero in an admissible heuristic.
+
+The algorithm described so far gives us only the length of the shortest path. To find the actual sequence of steps, the algorithm can be easily revised so that each node on the path keeps track of its predecessor. After this algorithm is run, the ending node will point to its predecessor, and so on, until some node's predecessor is the start node.
+
+As an example, when searching for the shortest route on a map, h(x) might represent the straight-line distance to the goal, since that is physically the smallest possible distance between any two points.
+
+If the heuristic h satisfies the additional condition h(x) ≤ d(x, y) + h(y) for every edge (x, y) of the graph (where d denotes the length of that edge), then h is called monotone, or consistent. In such a case, A* can be implemented more efficiently—roughly speaking, no node needs to be processed more than once (see closed set below)—and A* is equivalent to running Dijkstra's algorithm with the reduced cost d'(x, y) = d(x, y) + h(y) − h(x).
+
+```
+# Pseudocode
+function A*(start, goal)
+    // The set of nodes already evaluated.
+    closedSet := {}
+    // The set of currently discovered nodes that are already evaluated.
+    // Initially, only the start node is known.
+    openSet := {start}
+    // For each node, which node it can most efficiently be reached from.
+    // If a node can be reached from many nodes, cameFrom will eventually contain the
+    // most efficient previous step.
+    cameFrom := the empty map
+
+    // For each node, the cost of getting from the start node to that node.
+    gScore := map with default value of Infinity
+    // The cost of going from start to start is zero.
+    gScore[start] := 0 
+    // For each node, the total cost of getting from the start node to the goal
+    // by passing by that node. That value is partly known, partly heuristic.
+    fScore := map with default value of Infinity
+    // For the first node, that value is completely heuristic.
+    fScore[start] := heuristic_cost_estimate(start, goal)
+
+    while openSet is not empty
+        current := the node in openSet having the lowest fScore[] value
+        if current = goal
+            return reconstruct_path(cameFrom, current)
+
+        openSet.Remove(current)
+        closedSet.Add(current)
+        for each neighbor of current
+            if neighbor in closedSet
+                continue		// Ignore the neighbor which is already evaluated.
+            // The distance from start to a neighbor
+            tentative_gScore := gScore[current] + dist_between(current, neighbor)
+            if neighbor not in openSet	// Discover a new node
+                openSet.Add(neighbor)
+            else if tentative_gScore >= gScore[neighbor]
+                continue		// This is not a better path.
+
+            // This path is the best until now. Record it!
+            cameFrom[neighbor] := current
+            gScore[neighbor] := tentative_gScore
+            fScore[neighbor] := gScore[neighbor] + heuristic_cost_estimate(neighbor, goal)
+
+    return failure
+
+function reconstruct_path(cameFrom, current)
+    total_path := [current]
+    while current in cameFrom.Keys:
+        current := cameFrom[current]
+        total_path.append(current)
+    return total_path
+```
 
 
 ## 10. Other data structures
